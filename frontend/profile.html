@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - FoodMate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f2ea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: white;
+            color: #ff6347;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        
+        .back-button:hover {
+            background-color: #fff5f2;
+            transform: translateY(-2px);
+        }
+        
+        .profile-card {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+        }
+        
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #ff6347;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .profile-email {
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .food-preferences {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .preference-tag {
+            background-color: #ffece0;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .preference-tag i {
+            color: #ff6347;
+            margin-right: 8px;
+        }
+        
+        .activity-list {
+            margin-bottom: 30px;
+        }
+        
+        .activity-item {
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .activity-icon {
+            color: #ff6347;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .activity-content {
+            display: flex;
+            align-items: center;
+        }
+        
+        .activity-time {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn-primary {
+            background-color: #ff6347;
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #ccc;
+            color: #666;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <a href="home.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+    <div class="profile-card">
+        <div class="profile-header">
+            <img src="https://mypetsays.co.uk/cdn/shop/articles/National_Black_Cat_Day.jpg?crop=center&height=1200&v=1695635944&width=1200" alt="Profile" class="profile-image">
+            <h1 class="profile-name">ไอกั้ง</h1>
+            <p class="profile-email">seksan@go.buu.ac.th</p>
+        </div>
+        
+        <h2 class="section-title">Food Preferences</h2>
+        <div class="food-preferences">
+            <div class="preference-tag">
+                <i class="fas fa-utensils"></i>
+                <span>Asian Cuisine</span>
+            </div>
+            <div class="preference-tag">
+                <i class="fas fa-pizza-slice"></i>
+                <span>Italian Food</span>
+            </div>
+            <div class="preference-tag">
+                <i class="fas fa-fish"></i>
+                <span>Seafood</span>
+            </div>
+            <div class="preference-tag">
+                <i class="fas fa-pepper-hot"></i>
+                <span>Spicy Food</span>
+            </div>
+            <div class="preference-tag">
+                <i class="fas fa-leaf"></i>
+                <span>Vegetarian</span>
+            </div>
+            <div class="preference-tag">
+                <i class="fas fa-hamburger"></i>
+                <span>American</span>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Recent Activity</h2>
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-content">
+                    <i class="fas fa-utensils activity-icon"></i>
+                    <span>Group dinner at Sakura Japanese</span>
+                </div>
+                <span class="activity-time">2 days ago</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-content">
+                    <i class="fas fa-users activity-icon"></i>
+                    <span>Created new dining group</span>
+                </div>
+                <span class="activity-time">1 week ago</span>
+            </div>
+        </div>
+        
+        <div class="profile-actions">
+            <button class="btn btn-primary">
+                <i class="fas fa-edit"></i>
+                Edit Profile
+            </button>
+            <button class="btn btn-outline">
+                <i class="fas fa-sign-out-alt"></i>
+                Log Out
+            </button>
+        </div>
+    </div>
+</body>
+</html>
