@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Room</title>
+</head>
+<body>
+    <h1>Create a Room</h1>
+    <form id="createRoomForm">
+        <label for="createdBy">User ID:</label>
+        <input type="text" id="createdBy" name="createdBy" required>
+        <button type="submit">Create Room</button>
+    </form>
+
+    <script>
+        document.getElementById('createRoomForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('create_room.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(`Room created with ID: ${data.RoomID} and Code: ${data.RoomCode}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

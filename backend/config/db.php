@@ -1,12 +1,12 @@
 <?php
 $host = 'localhost';
-$dbname = 'restaurant_finder';
-$username = 'root';
-$password = '';
+$db = 'restaurant_system';
+$user = 'root';
+$pass = '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("การเชื่อมต่อฐานข้อมูลล้มเหลว: " . $e->getMessage());
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+?>
