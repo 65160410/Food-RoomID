@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Room;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
+class DashboardController extends Controller
+{
+    public function index()
+    {
+        $user = Auth::user();
+        
+        // ดึงห้องที่ผู้ใช้สร้าง
+        $createdRooms = Room::where('created_by', $user->id)->get();
+        
+        // ดึงห้องที่ผู้ใช้เข้าร่วม
+        $joinedRooms = Room::whereHas('members', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+        
+        return view('dashboard', compact('createdRooms', 'joinedRooms'));
+    }
+
+    public function create()
+    {
+        return view('create-room');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'room_name' => 'required|string|max:255',
+        ]);
+        
+        $room = Room::create([
+            'name' => $request->room_name,
+            'created_by' => Auth::id(),
+            'room_code' => Str::random(8),
+        ]);
+        
+        return redirect()->route('dashboard')->with('success', 'ห้องถูกสร้างเรียบร้อย! แชร์ลิงก์ให้เพื่อนเข้าร่วม: ' . route('join-room', $room->room_code));
+    }
+
+    public function showLogin()
+    {
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            return redirect()->route('dashboard');
+        }
+        
+        return back()->withErrors(['email' => 'Invalid credentials.']);
+    }
+
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+        
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        
+        return redirect()->route('login')->with('success', 'Registration successful! Please log in.');
+    }
+
+    public function showLanding()
+    {
+        return view('landing');
+    }
+    
+    public function joinRoom()
+    {
+        return view('join-room');
+    }
+
+    public function roomInterface()
+    {
+        return view('room-interface');
+    }
+
+    public function aiResult()
+    {
+        return view('ai-result');
+    }
+
+    public function restaurantDetails()
+    {
+        return view('restaurant-details');
+    }
+
+    public function profile()
+    {
+        return view('profile');
+    }
+
+    public function history()
+    {
+        return view('history');
+    }
+}
+
+?>
+
+<!-- main.html (Landing Page) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Room</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container text-center mt-5">
+        <h1>Welcome to Food Room</h1>
+        <p>ค้นหาร้านอาหารที่ดีที่สุดสำหรับกลุ่มของคุณ</p>
+        
+        <a href="{{ route('login') }}" class="btn btn-primary">เข้าสู่ระบบ</a>
+        <a href="{{ route('register') }}" class="btn btn-secondary">สมัครสมาชิก</a>
+        <a href="{{ route('dashboard') }}" class="btn btn-success">ใช้ Guest Mode</a>
+    </div>
+</body>
+</html>
