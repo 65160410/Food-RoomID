@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodMate - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #fff;
+        }
+        
+        .sidebar {
+            width: 200px;
+            background-color: #fff;
+            padding: 2rem 1rem;
+            border-right: 1px solid #f0f0f0;
+        }
+        
+        .logo {
+            color: #ff5722;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            color: #888;
+            padding: 0.75rem 0;
+            text-decoration: none;
+        }
+        
+        .menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .menu-item:hover {
+            color: #ff5722;
+        }
+        
+        .profile-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #888;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #fff9f0;
+        }
+        
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .top-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn-primary {
+            background-color: #ff7a55;
+            color: white;
+            margin-right: 1rem;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #ff7a55;
+            color: #ff7a55;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .room-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .room-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .status-active {
+            background-color: #e6f7e6;
+            color: #4caf50;
+        }
+        
+        .status-pending {
+            background-color: #fff8e1;
+            color: #ffc107;
+        }
+        
+        .room-info {
+            margin-bottom: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        
+        .info-item i {
+            color: #ff7a55;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .room-action {
+            text-align: center;
+            padding: 0.75rem;
+            background-color: #fff5ef;
+            border-radius: 0.5rem;
+            color: #ff7a55;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .room-action:hover {
+            background-color: #ffebe0;
+        }
+        
+        .actions-section {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-card {
+            padding: 1rem;
+            background-color: #fff5ef;
+            border-radius: 0.5rem;
+            text-align: center;
+            color: #ff7a55;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-card i {
+            margin-right: 0.5rem;
+        }
+        
+        .action-card:hover {
+            background-color: #ffebe0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">FoodMate</div>
+        <a href="Home.html" class="menu-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-compass"></i>
+            <span>Explore</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>New Room</span>
+        </a>
+        <a href="history.html" class="menu-item">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-bell"></i>
+            <span>Notification</span>
+        </a>
+        <a href="profile.html" class="menu-item">
+            <div class="profile-icon"></div>
+            <span>Profile</span>
+        </a>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-section">
+            <h1>Welcome back</h1>
+            <p class="subtitle">Ready to plan your next group meal?</p>
+        </div>
+        
+        <div class="top-actions">
+            <button class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                Create New Room
+            </button>
+            <a href="history.html" class="btn btn-outline">
+                <i class="fas fa-history"></i>
+                History
+            </a>
+        </div>
+        
+        <h2>Your Active Rooms</h2>
+        
+        <div class="rooms-grid">
+            <div class="room-card">
+                <div class="room-header">
+                    <div class="room-title">Lunch with Team</div>
+                    <div class="status status-active">Active</div>
+                </div>
+                <div class="room-info">
+                    <div class="info-item">
+                        <i class="fas fa-users"></i>
+                        <span>8 participants</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Downtown Area</span>
+                    </div>
+                </div>
+                <a href="#" class="room-action">Enter Room</a>
+            </div>
+            
+            <div class="room-card">
+                <div class="room-header">
+                    <div class="room-title">Weekend Dinner</div>
+                    <div class="status status-pending">Pending</div>
+                </div>
+                <div class="room-info">
+                    <div class="info-item">
+                        <i class="fas fa-users"></i>
+                        <span>4 participants</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>City Center</span>
+                    </div>
+                </div>
+                <a href="#" class="room-action">Enter Room</a>
+            </div>
+        </div>
+        
+        <div class="actions-section">
+            <h2>Quick Actions</h2>
+            
+            <div class="actions-grid">
+                <a href="#" class="action-card">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Create Room</span>
+                </a>
+                <a href="#" class="action-card">
+                    <i class="fas fa-users"></i>
+                    <span>Join Room</span>
+                </a>
+                <a href="#" class="action-card">
+                    <i class="fas fa-star"></i>
+                    <span>Favorites</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

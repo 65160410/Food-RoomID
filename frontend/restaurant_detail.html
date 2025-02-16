@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rustic Kitchen - Restaurant Details</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .back-button {
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .share-button {
+            background: none;
+            border: none;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .restaurant-info {
+            background-color: white;
+            border-radius: 15px;
+            margin: -20px 15px 0;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .restaurant-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .restaurant-categories {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .dot-separator:after {
+            content: "•";
+            margin: 0 5px;
+        }
+        
+        .restaurant-rating {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #fef2e4;
+            color: #ff8c00;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+        
+        .restaurant-hours-price {
+            display: flex;
+            align-items: center;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .price-level {
+            margin-left: 15px;
+            color: #666;
+        }
+        
+        .action-buttons {
+            display: flex;
+            margin: 15px -5px;
+        }
+        
+        .action-button {
+            flex: 1;
+            margin: 0 5px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff7043;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .action-button i {
+            margin-right: 8px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 25px 15px 15px;
+        }
+        
+        .dishes-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 15px;
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .dishes-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Edge */
+        }
+        
+        .dish-card {
+            min-width: 280px;
+            margin-right: 15px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .dish-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .dish-info {
+            padding: 12px;
+        }
+        
+        .dish-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .dish-price {
+            color: #666;
+        }
+        
+        .location-hours {
+            margin: 0 15px 25px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .location-address, .hours-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        .location-address i, .hours-row i {
+            color: #ff7043;
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .hours-details {
+            margin-left: 30px;
+        }
+        
+        .heart-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        
+        .heart-icon {
+            color: #ff7043;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with back and share buttons -->
+    <div class="header">
+        <a href="Home.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            <span style="margin-left: 8px;">Restaurant Details</span>
+        </a>
+        <button class="share-button">
+            <i class="fas fa-share-alt"></i>
+        </button>
+    </div>
+    
+    <!-- Hero image with heart button -->
+    <div style="position: relative;">
+        <img src="https://media.admiddleeast.com/photos/66a8cd5c062b8b3a02f9430c/16:9/w_2560%2Cc_limit/abu-dhabi-broadway-interior-seating.jpeg" alt="The Rustic Kitchen interior" class="hero-image">
+        <button class="heart-button">
+            <i class="far fa-heart heart-icon"></i>
+        </button>
+    </div>
+    
+    <!-- Restaurant information -->
+    <div class="restaurant-info">
+        <h1 class="restaurant-name">The Rustic Kitchen</h1>
+        <div class="restaurant-categories">
+            <span>Italian</span>
+            <span class="dot-separator"></span>
+            <span>Mediterranean</span>
+            <span class="dot-separator"></span>
+            <span>Fine Dining</span>
+        </div>
+        <div class="restaurant-rating">
+            <i class="fas fa-star" style="color: #ff8c00;"></i>
+            <span>4.8 (2.4k)</span>
+        </div>
+        <div class="restaurant-hours-price">
+            <span><i class="far fa-clock" style="margin-right: 5px;"></i>Open until 10 PM</span>
+            <span class="price-level">$$$</span>
+        </div>
+        
+        <!-- Action buttons -->
+        <div class="action-buttons">
+            <button class="action-button">
+                <i class="far fa-star"></i>
+                View Reviews
+            </button>
+            <button class="action-button">
+                <i class="fas fa-map-marker-alt"></i>
+                Open Maps
+            </button>
+        </div>
+    </div>
+    
+    <!-- Popular dishes section -->
+    <h2 class="section-title">Popular Dishes</h2>
+    <div class="dishes-container">
+        <div class="dish-card">
+            <img src="/api/placeholder/280/180" alt="Truffle Pasta" class="dish-image">
+            <div class="dish-info">
+                <div class="dish-name">Truffle Pasta</div>
+                <div class="dish-price">$24.99</div>
+            </div>
+        </div>
+        <div class="dish-card">
+            <img src="/api/placeholder/280/180" alt="Seafood Risotto" class="dish-image">
+            <div class="dish-info">
+                <div class="dish-name">Seafood Risotto</div>
+                <div class="dish-price">$29.99</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Location and hours section -->
+    <h2 class="section-title">Location & Hours</h2>
+    <div class="location-hours">
+        <div class="location-address">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>123 Culinary Street, Foodie District, City, 12345</span>
+        </div>
+        <div class="hours-row">
+            <i class="far fa-clock"></i>
+            <div>
+                <div>Mon - Thu: 11:00 AM - 10:00 PM</div>
+                <div class="hours-details">Fri - Sat: 11:00 AM - 11:00 PM</div>
+                <div class="hours-details">Sun: 11:00 AM - 9:00 PM</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Toggle heart icon when clicked
+        document.querySelector('.heart-button').addEventListener('click', function() {
+            const heartIcon = this.querySelector('.heart-icon');
+            if (heartIcon.classList.contains('far')) {
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas');
+            } else {
+                heartIcon.classList.remove('fas');
+                heartIcon.classList.add('far');
+            }
+        });
+    </script>
+</body>
+</html>
