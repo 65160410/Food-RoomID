@@ -34,6 +34,11 @@
         font-size: 14px;
         color: gray;
       }
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
       .social-btn {
         width: 100%;
         padding: 10px;
@@ -94,12 +99,15 @@
         <h2>🍽️ สมัครสมาชิก</h2>
         <p>สร้างบัญชีของคุณเพื่อใช้งาน FoodMeet</p>
 
+        <!-- แสดงข้อความผิดพลาด -->
+        <div id="error-message" class="error-message" style="display: none;"></div>
+
         <button class="social-btn google">สมัครด้วย Google</button>
         <button class="social-btn facebook">สมัครด้วย Facebook</button>
 
         <div class="divider">หรือ</div>
 
-        <form action="index.html" method="POST">
+        <form action="../backend/api/register.php" method="POST">
           <label for="fullname">ชื่อ - นามสกุล</label>
           <input
             type="text"
@@ -144,5 +152,25 @@
         </p>
       </div>
     </div>
+
+    <script>
+      // ฟังก์ชันที่ใช้เพื่อดึงค่าจาก query string
+      function getQueryParams(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
+
+      // หากมี query string สำหรับ error หรือ message ให้แสดงข้อความผิดพลาด
+      window.onload = function () {
+        const status = getQueryParams("status");
+        const message = getQueryParams("message");
+
+        if (status === "error" && message) {
+          const errorMessage = document.getElementById("error-message");
+          errorMessage.style.display = "block";
+          errorMessage.textContent = decodeURIComponent(message);
+        }
+      };
+    </script>
   </body>
 </html>

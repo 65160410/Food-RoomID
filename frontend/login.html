@@ -154,7 +154,7 @@
 
       <div class="divider">or</div>
 
-      <form action="index.html" method="POST">
+      <form action="../backend/api/login.php" method="POST">
         <label for="email">Email Address</label>
         <input
           type="email"
@@ -163,7 +163,7 @@
           placeholder="name@example.com"
           required
         />
-
+      
         <label for="password">Password</label>
         <input
           type="password"
@@ -172,14 +172,16 @@
           placeholder="Enter your password"
           required
         />
-
+      
         <div class="options">
           <label><input type="checkbox" name="remember" /> Remember me</label>
           <a href="#" class="forgot-password">Forgot Password?</a>
         </div>
-
+      
         <button type="submit" class="main-btn">Login</button>
-      </form>
+    </form>
+    
+      
 
       <p class="switch-auth">
         Don't have an account? <a href="register.html">Sign Up</a>
