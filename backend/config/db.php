@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$db = 'restaurant_system';
+$db = 'food-map';
 $user = 'root';
 $pass = '';
 

@@ -1,31 +1,26 @@
 <?php
-header('Content-Type: application/json');
-require_once __DIR__ . '/../../config/db.php';
+include '../config/db.php';
 
-$action = $_POST['action'] ?? '';
-$email = $_POST['email'] ?? '';
-$password = $_POST['password'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
 
-if ($action === 'login') {
-    // ตรวจสอบข้อมูลล็อกอิน
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    $username = $data['username'];
+    $email = $data['email'];
+    $password = password_hash($data['password'], PASSWORD_BCRYPT);
 
-    if ($user && password_verify($password, $user['password'])) {
-        echo json_encode(['success' => true, 'message' => 'ล็อกอินสำเร็จ']);
+    $sql = "INSERT INTO users (Username, Email, Password) VALUES ('$username', '$email', '$password')";
+
+    if ($conn->query($sql) === TRUE) {
+        // ส่งข้อมูล JSON กลับไปยัง frontend
+        echo json_encode(["success" => true, "message" => "Sign up successful!"]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง']);
-    }
-} elseif ($action === 'signup') {
-    // ตรวจสอบการสมัครสมาชิก
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-    $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
-    if ($stmt->execute([$email, $hashedPassword])) {
-        echo json_encode(['success' => true, 'message' => 'สมัครสมาชิกสำเร็จ']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'สมัครสมาชิกไม่สำเร็จ']);
+        // ส่งข้อผิดพลาดกลับไปยัง frontend
+        echo json_encode(["success" => false, "error" => "Error: " . $conn->error]);
     }
 } else {
-    echo json_encode(['success' => false, 'message' => 'การดำเนินการไม่ถูกต้อง']);
+    // หากไม่ใช่ POST request
+    echo json_encode(["success" => false, "error" => "Invalid request method"]);
 }
+
+$conn->close();
+?>
