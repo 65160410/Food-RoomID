@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - FoodMate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #fff;
+        }
+        
+        .sidebar {
+            width: 200px;
+            background-color: #fff;
+            padding: 2rem 1rem;
+            border-right: 1px solid #f0f0f0;
+        }
+        
+        .logo {
+            color: #ff5722;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            color: #888;
+            padding: 0.75rem 0;
+            text-decoration: none;
+        }
+        
+        .menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .menu-item:hover {
+            color: #ff5722;
+        }
+        
+        .menu-item.active {
+            color: #ff5722;
+        }
+        
+        .profile-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #888;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #fff9f0;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+        }
+        
+        .tab {
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            margin-right: 0.75rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .tab.active {
+            background-color: #ff9980;
+            color: white;
+        }
+        
+        .tab:not(.active) {
+            background-color: white;
+            color: #666;
+        }
+        
+        .history-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+        }
+        
+        .restaurant-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            margin-right: 1.5rem;
+        }
+        
+        .restaurant-info {
+            flex: 1;
+        }
+        
+        .restaurant-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .restaurant-details {
+            display: flex;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .restaurant-details .separator {
+            margin: 0 0.5rem;
+        }
+        
+        .rating {
+            color: #ffc107;
+        }
+        
+        .visit-date {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .visit-tags {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .tag {
+            background-color: #fff4ee;
+            color: #ff5722;
+            padding: 0.3rem 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-right: 0.75rem;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .left-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            background: transparent;
+            border: none;
+            color: #666;
+            margin-right: 1.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .action-btn:hover {
+            color: #ff5722;
+        }
+        
+        .book-again {
+            background-color: #ff9980;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .book-again:hover {
+            background-color: #ff7a55;
+        }
+        
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            margin-left: auto;
+        }
+        
+        .stars {
+            display: flex;
+            margin-right: 0.5rem;
+        }
+        
+        .stars i {
+            color: #ffc107;
+            margin-right: 0.2rem;
+        }
+        
+        .stars i.empty {
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">FoodMate</div>
+        <a href="Home.html" class="menu-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-compass"></i>
+            <span>Explore</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>New Room</span>
+        </a>
+        <a href="history.html" class="menu-item active">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-bell"></i>
+            <span>Notification</span>
+        </a>
+        <a href="profile.html" class="menu-item">
+            <div class="profile-icon"></div>
+            <span>Profile</span>
+        </a>
+    </div>
+    
+    <div class="main-content">
+        <h1 class="page-title">History</h1>
+        <p class="page-subtitle">Your past dining experiences and created rooms</p>
+        
+        <div class="tabs">
+            <div class="tab active">All History</div>
+            <div class="tab">Created Rooms</div>
+            <div class="tab">Visited Places</div>
+        </div>
+        
+        <div class="history-card">
+            <img src="/api/placeholder/80/80" alt="Sushi Master" class="restaurant-image">
+            <div class="restaurant-info">
+                <div class="restaurant-name">Sushi Master</div>
+                <div class="restaurant-details">
+                    Japanese <span class="separator">•</span> $$$ <span class="separator">•</span> 
+                    <span class="rating">4.8 <i class="fas fa-star"></i></span>
+                </div>
+                <div class="visit-date">Visited on March 15, 2025</div>
+                <div class="visit-tags">
+                    <div class="tag">Group of 6</div>
+                    <div class="tag">Room #8892</div>
+                </div>
+                <div class="actions">
+                    <div class="left-actions">
+                        <button class="action-btn">
+                            <i class="far fa-star"></i>
+                            Rate Visit
+                        </button>
+                        <button class="action-btn">
+                            <i class="far fa-comment"></i>
+                            Add Review
+                        </button>
+                    </div>
+                    <button class="book-again">Book Again</button>
+                </div>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+        
+        <div class="history-card">
+            <img src="/api/placeholder/80/80" alt="La Pasta House" class="restaurant-image">
+            <div class="restaurant-info">
+                <div class="restaurant-name">La Pasta House</div>
+                <div class="restaurant-details">
+                    Italian <span class="separator">•</span> $$ <span class="separator">•</span> 
+                    <span class="rating">4.5 <i class="fas fa-star"></i></span>
+                </div>
+                <div class="visit-date">Visited on March 10, 2025</div>
+                <div class="visit-tags">
+                    <div class="tag">Group of 4</div>
+                    <div class="tag">Room #8891</div>
+                </div>
+                <div class="actions">
+                    <div class="left-actions">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </div>
+                        <button class="action-btn">
+                            <i class="far fa-comment"></i>
+                            Add Review
+                        </button>
+                    </div>
+                    <button class="book-again">Book Again</button>
+                </div>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+    </div>
+</body>
+</html>
