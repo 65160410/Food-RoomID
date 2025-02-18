@@ -1,1 +1,1 @@
-const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/endpoint`);
+const API_BASE_URL = `http://localhost/Food-ROOMID/backend/api`;
