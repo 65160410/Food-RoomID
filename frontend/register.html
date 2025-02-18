@@ -99,7 +99,7 @@
         <h2>🍽️ สมัครสมาชิก</h2>
         <p>สร้างบัญชีของคุณเพื่อใช้งาน FoodMeet</p>
 
-        <!-- แสดงข้อความผิดพลาด -->
+        <!-- ข้อความผิดพลาด -->
         <div id="error-message" class="error-message" style="display: none;"></div>
 
         <button class="social-btn google">สมัครด้วย Google</button>
@@ -107,7 +107,8 @@
 
         <div class="divider">หรือ</div>
 
-        <form action="../backend/api/register.php" method="POST">
+        <!-- ใช้ form เพื่อจัดระเบียบฟิลด์ แต่ไม่ใส่ action/method -->
+        <form id="register-form">
           <label for="fullname">ชื่อ - นามสกุล</label>
           <input
             type="text"
@@ -144,7 +145,10 @@
             required
           />
 
-          <button type="submit" class="main-btn">สมัครสมาชิก</button>
+          <!-- เพิ่ม id ให้ปุ่ม เพื่อเรียก event ผ่าน JavaScript -->
+          <button type="button" id="btn-register" class="main-btn">
+            สมัครสมาชิก
+          </button>
         </form>
 
         <p class="switch-auth">
@@ -154,23 +158,54 @@
     </div>
 
     <script>
-      // ฟังก์ชันที่ใช้เพื่อดึงค่าจาก query string
-      function getQueryParams(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-      }
+      document.getElementById('btn-register').addEventListener('click', async () => {
+        // อ่านค่าจาก input
+        const fullname = document.getElementById('fullname').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
 
-      // หากมี query string สำหรับ error หรือ message ให้แสดงข้อความผิดพลาด
-      window.onload = function () {
-        const status = getQueryParams("status");
-        const message = getQueryParams("message");
+        // เคลียร์/แสดง error message
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
 
-        if (status === "error" && message) {
-          const errorMessage = document.getElementById("error-message");
-          errorMessage.style.display = "block";
-          errorMessage.textContent = decodeURIComponent(message);
+        try {
+          // เรียก API (Backend) แบบ JSON
+          const response = await fetch(`${API_BASE_URL}/register.php`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              fullname: fullname,
+              email: email,
+              password: password,
+              'confirm-password': confirmPassword
+            })
+          });
+
+          // แปลงผลลัพธ์จาก API เป็น JSON
+          const result = await response.json();
+          console.log(result);
+          
+          if (result.status === 'error') {
+            // แสดงข้อความผิดพลาด
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = result.message;
+          } else {
+            // สมัครสำเร็จ
+            alert('สมัครสมาชิกสำเร็จ');
+            // หรือจะ redirect ไปหน้า login, home หรือหน้าที่ต้องการ
+            // window.location.href = 'login.html';
+          }
+        } catch (err) {
+          console.error(err);
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'เกิดข้อผิดพลาดในการสมัครสมาชิก';
         }
-      };
+      });
     </script>
+    <script src="../api/api.js"></script>
   </body>
 </html>

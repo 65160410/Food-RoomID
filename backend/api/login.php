@@ -1,38 +1,68 @@
 <?php
-session_start();
-include('../config/db.php'); // เชื่อมต่อฐานข้อมูล
+// login.php
+// เปิด Error Reporting เฉพาะช่วงพัฒนา (ใน Production ควรปิดหรือปรับลง)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// ตรวจสอบว่าได้รับข้อมูลจากฟอร์มหรือไม่
-if (isset($_POST['email']) && isset($_POST['password'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-} else {
-    echo json_encode(["status" => "error", "message" => "Email and password are required"]);
+// ตอบกลับเป็น JSON
+header("Content-Type: application/json");
+
+// อนุญาต CORS (กรณี Frontend & Backend คนละโดเมน)
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+
+// ถ้าเป็น preflight (OPTIONS) ให้หยุดทำงานทันที
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// สร้างคำสั่ง SQL เพื่อตรวจสอบอีเมลและรหัสผ่าน
-$sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
+// อ่านข้อมูล JSON จาก body
+$rawData = file_get_contents("php://input");
+$data = json_decode($rawData, true);
+
+// ตรวจสอบว่ามี email / password
+if (!isset($data['email']) || !isset($data['password'])) {
+    echo json_encode([
+        "status"  => "error",
+        "message" => "Email and Password are required"
+    ]);
+    exit;
+}
+
+// เชื่อมต่อฐานข้อมูล (db.php ต้องมี $pdo = new PDO(...); และห้าม echo อย่างอื่น)
+include '../config/db.php';
+
+// เก็บค่าจากฟอร์ม
+$email    = $data['email'];
+$password = $data['password']; // Plain text password จากฟอร์ม
+
+// 1) ค้นหา user ด้วย email + password แบบตรง ๆ (Plain text)
+$sql  = "SELECT * FROM users 
+         WHERE email = :email 
+           AND password = :password 
+         LIMIT 1";
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['email' => $email]);
+$stmt->execute([
+    'email'    => $email,
+    'password' => $password
+]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// ตรวจสอบว่าเจอผู้ใช้หรือไม่
+// 2) เช็คผลลัพธ์
 if ($user) {
-    // ตรวจสอบรหัสผ่าน (หากมีการเข้ารหัส)
-    if (password_verify($password, $user['password'])) {
-        // เก็บข้อมูลผู้ใช้ใน session
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['email'] = $user['email'];
-
-        // ส่งกลับการเข้าสู่ระบบสำเร็จ
-        echo json_encode(["status" => "success", "message" => "Login successful"]);
-    } else {
-        // รหัสผ่านไม่ถูกต้อง
-        echo json_encode(["status" => "error", "message" => "Invalid email or password"]);
-    }
+    // ถ้าเจอ user แสดงว่า email/password ตรงกัน (Plain text)
+    echo json_encode([
+        "status"  => "success",
+        "message" => "Login successful"
+        // สามารถส่งข้อมูล user_id, token, หรืออื่น ๆ ได้ตามต้องการ
+    ]);
 } else {
-    // ไม่พบอีเมลในฐานข้อมูล
-    echo json_encode(["status" => "error", "message" => "Invalid email or password"]);
+    // ไม่เจอ user (email/password ไม่ตรง)
+    echo json_encode([
+        "status"  => "error",
+        "message" => "Invalid email or password"
+    ]);
 }
-?>
+
+exit;
