@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- กำหนดชุดอักขระเป็น UTF-8 เพื่อรองรับหลายภาษา -->
+    <meta charset="UTF-8">
+    
+    <!-- ทำให้หน้าเว็บ responsive กับทุกขนาดหน้าจอ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ชื่อของหน้าเว็บ -->
+    <title>FoodMate - Dashboard</title>
+    
+    <!-- เรียกใช้งาน Font Awesome สำหรับไอคอนต่างๆ -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- เริ่มต้นเขียน CSS -->
+    <style>
+        /* ตั้งค่าพื้นฐาน */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+         /* ตั้งค่าภาพพื้นหลังและการจัดวางหน้าหลัก */
+         body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #fff9f0;
+        }
+         /* การจัดวางส่วนหลัก (Main Content) */
+         .main-content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #fff9f0;
+            margin-left: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* การ์ด Create Room */
+        .create-room-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            width: 450px;
+            text-align: center;
+        }
+
+        /* หัวข้อใน Create Room */
+        .create-room-card h2 {
+            color: #FF5722;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ข้อความอธิบายใน Create Room */
+        .create-room-card p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        /* ช่องกรอกชื่อห้อง */
+        .create-room-card input[type="text"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        /* ปุ่ม Invite Friends */
+        .create-room-card button {
+            background-color: #FF5722;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* เปลี่ยนสีปุ่มเมื่อชี้ */
+        .create-room-card button:hover {
+            background-color: #E64A19;
+        }
+
+        /* ลิงก์ Share Room Link */
+        .create-room-card a {
+            color: #FF5722;
+            display: block;
+            margin-top: 1rem;
+            text-decoration: none;
+        }
+
+        /* เปลี่ยนลิงก์เมื่อชี้ */
+        .create-room-card a:hover {
+            text-decoration: underline;
+        }
+
+        /* การตั้งค่าสำหรับ Sidebar */
+        .sidebar {
+            width: 200px;                      /* ความกว้างของ Sidebar */
+            background-color: #fff;             /* พื้นหลังสีขาว */
+            padding: 2rem 1rem;                 /* ระยะห่างภายใน (บน-ล่าง 2rem, ซ้าย-ขวา 1rem) */
+            border-right: 1px solid #f0f0f0;    /* เส้นขอบด้านขวาสีเทาอ่อน */
+        }
+
+        /* โลโก้ */
+        .logo {
+            color: #ff5722;                     /* สีส้ม */
+            font-weight: bold;                  /* ตัวหนา */
+            font-size: 1.5rem;                  /* ขนาดตัวอักษรใหญ่ */
+            margin-bottom: 2rem;                /* ระยะห่างด้านล่าง */
+        }
+
+        /* เมนูใน Sidebar */
+        .menu-item {
+            display: flex;                      /* จัดเรียงแบบ Flexbox */
+            align-items: center;                /* จัดตำแหน่งตรงกลางแนวตั้ง */
+            color: #888;                        /* สีเทา */
+            padding: 0.75rem 0;                 /* ระยะห่างบน-ล่าง */
+            text-decoration: none;              /* ไม่มีเส้นขีดใต้ */
+            transition: color 0.3s;             /* การเปลี่ยนสีแบบนุ่มนวล */
+        }
+
+        /* ไอคอนในเมนู */
+        .menu-item i {
+            margin-right: 0.75rem;              /* ระยะห่างขวา */
+            font-size: 1.2rem;                  /* ขนาดไอคอน */
+        }
+
+        /* เปลี่ยนสีเมื่อเมาส์วาง */
+        .menu-item:hover {
+            color: #ff5722;                     /* เปลี่ยนเป็นสีส้ม */
+        }
+
+        /* โปรไฟล์ผู้ใช้ */
+        .profile-icon {
+            width: 20px;                        /* ความกว้าง */
+            height: 20px;                       /* ความสูง */
+            background-color: #888;             /* พื้นหลังสีเทา */
+            border-radius: 50%;                 /* ทำให้เป็นวงกลม */
+            margin-right: 0.75rem;              /* ระยะห่างขวา */
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar เริ่มต้น -->
+    <div class="sidebar">
+        <!-- โลโก้ของ FoodMate -->
+        <div class="logo">FoodMate</div>
+        
+        <!-- เมนูรายการใน Sidebar -->
+        <a href="#" class="menu-item">
+            <!-- ไอคอน Dashboard -->
+            <i class="fa fa-tachometer-alt"></i>
+            Dashboard
+        </a>
+        
+        <a href="#" class="menu-item">
+            <!-- ไอคอนห้อง -->
+            <i class="fa fa-door-open"></i>
+            Rooms
+        </a>
+        
+        <a href="#" class="menu-item">
+            <!-- ไอคอนรายงาน -->
+            <i class="fa fa-file-alt"></i>
+            Reports
+        </a>
+        
+        <a href="#" class="menu-item">
+            <!-- ไอคอนการตั้งค่า -->
+            <i class="fa fa-cog"></i>
+            Settings
+        </a>
+        
+        <!-- โปรไฟล์ผู้ใช้ -->
+        <a href="#" class="menu-item">
+            <!-- ไอคอนโปรไฟล์ (วงกลม) -->
+            <div class="profile-icon"></div>
+            Profile
+        </a>
+    </div>
+
+
+    <div class="main-content">
+        <div class="create-room-card">
+            <h2>Create Room</h2>
+            <p>Set up your dining group</p>
+            <input type="text" id="room-name" placeholder="Enter room name">
+            <button><i class="fas fa-user-plus"></i> Invite Friends</button>
+            <a href="#"><i class="fas fa-link"></i> Share Room Link</a>
+        </div>
+    </div>
+    
+</body>
+</html>
