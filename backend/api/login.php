@@ -1,38 +1,57 @@
 <?php
-session_start();
-include('../config/db.php'); // เชื่อมต่อฐานข้อมูล
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// ตรวจสอบว่าได้รับข้อมูลจากฟอร์มหรือไม่
-if (isset($_POST['email']) && isset($_POST['password'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-} else {
-    echo json_encode(["status" => "error", "message" => "Email and password are required"]);
+header("Content-Type: application/json");
+// เปิด CORS ตามต้องการ
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+
+// ถ้าเป็นพวก Preflight (OPTIONS) ก็ exit
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// สร้างคำสั่ง SQL เพื่อตรวจสอบอีเมลและรหัสผ่าน
-$sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
+$rawData = file_get_contents("php://input");
+$data = json_decode($rawData, true);
+
+if (!isset($data['email']) || !isset($data['password'])) {
+    echo json_encode([
+        "status"  => "error",
+        "message" => "Email and Password are required"
+    ]);
+    exit;
+}
+
+// ตัวอย่างเชื่อมต่อ DB
+include '../config/db.php';
+
+$sql  = "SELECT * FROM users WHERE email = :email LIMIT 1";
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['email' => $email]);
+$stmt->execute(['email' => $data['email']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// ตรวจสอบว่าเจอผู้ใช้หรือไม่
 if ($user) {
-    // ตรวจสอบรหัสผ่าน (หากมีการเข้ารหัส)
-    if (password_verify($password, $user['password'])) {
-        // เก็บข้อมูลผู้ใช้ใน session
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['email'] = $user['email'];
-
-        // ส่งกลับการเข้าสู่ระบบสำเร็จ
-        echo json_encode(["status" => "success", "message" => "Login successful"]);
+    // หากตอนสมัคร เก็บรหัสผ่านด้วย password_hash()
+    if (password_verify($data['password'], $user['password'])) {
+        // ล็อกอินสำเร็จ
+        echo json_encode([
+            "status"  => "success",
+            "message" => "Login successful"
+        ]);
     } else {
-        // รหัสผ่านไม่ถูกต้อง
-        echo json_encode(["status" => "error", "message" => "Invalid email or password"]);
+        // รหัสผ่านผิด
+        echo json_encode([
+            "status"  => "error",
+            "message" => "Invalid email or password"
+        ]);
     }
 } else {
-    // ไม่พบอีเมลในฐานข้อมูล
-    echo json_encode(["status" => "error", "message" => "Invalid email or password"]);
+    // ไม่พบ email นี้
+    echo json_encode([
+        "status"  => "error",
+        "message" => "Invalid email or password"
+    ]);
 }
-?>
+exit;

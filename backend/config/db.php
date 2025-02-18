@@ -1,16 +1,18 @@
 <?php
-// db.php - การเชื่อมต่อฐานข้อมูล
+// db.php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-$host = 'localhost';  // ชื่อโฮสต์ของฐานข้อมูล
-$dbname = 'foodmeet';  // ชื่อฐานข้อมูล
-$username = 'root';  // ชื่อผู้ใช้
-$password = '';  // รหัสผ่าน
+$host     = 'localhost';  // หรือ IP/hostname ของโฮสต์
+$dbname   = 'foodmeet';
+$username = 'root';
+$password = '';           // ใน XAMPP ส่วนใหญ่ไม่ใส่รหัสผ่าน
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo 'เชื่อมต่อฐานข้อมูลสำเร็จ';
+    // ไม่ต้องแสดงผลข้อความเมื่อเชื่อมต่อสำเร็จ
 } catch (PDOException $e) {
-    echo 'การเชื่อมต่อฐานข้อมูลล้มเหลว: ' . $e->getMessage();
+    die('การเชื่อมต่อฐานข้อมูลล้มเหลว: ' . $e->getMessage());
 }
 ?>
