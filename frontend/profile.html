@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - FoodMate</title>
+    <!-- ป้องกัน cache -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -12,7 +17,7 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             background-color: #f9f2ea;
             display: flex;
@@ -21,7 +26,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .back-button {
             position: absolute;
             top: 20px;
@@ -35,32 +40,32 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: background-color 0.2s, transform 0.2s;
         }
-        
+
         .back-button:hover {
             background-color: #fff5f2;
             transform: translateY(-2px);
         }
-        
+
         .profile-card {
             background-color: white;
             border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             width: 100%;
             max-width: 600px;
             padding: 40px;
         }
-        
+
         .profile-header {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 30px;
         }
-        
+
         .profile-image {
             width: 120px;
             height: 120px;
@@ -69,33 +74,33 @@
             object-fit: cover;
             margin-bottom: 20px;
         }
-        
+
         .profile-name {
             font-size: 1.8rem;
             font-weight: bold;
             margin-bottom: 5px;
             text-align: center;
         }
-        
+
         .profile-email {
             color: #666;
             margin-bottom: 20px;
             text-align: center;
         }
-        
+
         .section-title {
             font-size: 1.2rem;
             font-weight: bold;
             margin-bottom: 15px;
         }
-        
+
         .food-preferences {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
             margin-bottom: 30px;
         }
-        
+
         .preference-tag {
             background-color: #ffece0;
             border-radius: 10px;
@@ -103,16 +108,16 @@
             display: flex;
             align-items: center;
         }
-        
+
         .preference-tag i {
             color: #ff6347;
             margin-right: 8px;
         }
-        
+
         .activity-list {
             margin-bottom: 30px;
         }
-        
+
         .activity-item {
             background-color: #f5f5f5;
             border-radius: 10px;
@@ -122,29 +127,29 @@
             justify-content: space-between;
             margin-bottom: 10px;
         }
-        
+
         .activity-icon {
             color: #ff6347;
             margin-right: 10px;
             font-size: 1.2rem;
         }
-        
+
         .activity-content {
             display: flex;
             align-items: center;
         }
-        
+
         .activity-time {
             color: #888;
             font-size: 0.9rem;
         }
-        
+
         .profile-actions {
             display: flex;
             justify-content: center;
             gap: 15px;
         }
-        
+
         .btn {
             padding: 10px 20px;
             border-radius: 10px;
@@ -154,91 +159,116 @@
             display: flex;
             align-items: center;
         }
-        
+
         .btn-primary {
             background-color: #ff6347;
             color: white;
         }
-        
+
         .btn-outline {
             background-color: transparent;
             border: 1px solid #ccc;
             color: #666;
         }
-        
+
         .btn i {
             margin-right: 8px;
         }
     </style>
 </head>
+
 <body>
     <a href="home.html" class="back-button">
         <i class="fas fa-arrow-left"></i>
     </a>
-    
+
     <div class="profile-card">
         <div class="profile-header">
-            <img src="https://mypetsays.co.uk/cdn/shop/articles/National_Black_Cat_Day.jpg?crop=center&height=1200&v=1695635944&width=1200" alt="Profile" class="profile-image">
-            <h1 class="profile-name">ไอกั้ง</h1>
-            <p class="profile-email">seksan@go.buu.ac.th</p>
+            <img src="https://mypetsays.co.uk/cdn/shop/articles/National_Black_Cat_Day.jpg?crop=center&height=1200&v=1695635944&width=1200"
+                alt="Profile" class="profile-image">
+            <!-- ลบจุดหน้าชื่อ class -->
+            <h1 class="profile-name"></h1>
+            <p class="profile-email"></p>
         </div>
-        
+
         <h2 class="section-title">Food Preferences</h2>
         <div class="food-preferences">
-            <div class="preference-tag">
-                <i class="fas fa-utensils"></i>
-                <span>Asian Cuisine</span>
-            </div>
-            <div class="preference-tag">
-                <i class="fas fa-pizza-slice"></i>
-                <span>Italian Food</span>
-            </div>
-            <div class="preference-tag">
-                <i class="fas fa-fish"></i>
-                <span>Seafood</span>
-            </div>
-            <div class="preference-tag">
-                <i class="fas fa-pepper-hot"></i>
-                <span>Spicy Food</span>
-            </div>
-            <div class="preference-tag">
-                <i class="fas fa-leaf"></i>
-                <span>Vegetarian</span>
-            </div>
-            <div class="preference-tag">
-                <i class="fas fa-hamburger"></i>
-                <span>American</span>
-            </div>
+            <!-- Food preference tags จะถูกสร้างโดย JavaScript -->
         </div>
-        
+
         <h2 class="section-title">Recent Activity</h2>
         <div class="activity-list">
-            <div class="activity-item">
-                <div class="activity-content">
-                    <i class="fas fa-utensils activity-icon"></i>
-                    <span>Group dinner at Sakura Japanese</span>
-                </div>
-                <span class="activity-time">2 days ago</span>
-            </div>
-            <div class="activity-item">
-                <div class="activity-content">
-                    <i class="fas fa-users activity-icon"></i>
-                    <span>Created new dining group</span>
-                </div>
-                <span class="activity-time">1 week ago</span>
-            </div>
+            <!-- รายการกิจกรรมล่าสุดจะถูกสร้างโดย JavaScript -->
         </div>
-        
+
         <div class="profile-actions">
             <button class="btn btn-primary">
                 <i class="fas fa-edit"></i>
                 Edit Profile
             </button>
-            <button class="btn btn-outline">
+            <button class="btn btn-outline" id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i>
                 Log Out
             </button>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const userID = localStorage.getItem('userID');
+            console.log("Check userID in profile:", userID);
+
+
+            // ใช้ userID ในการเรียก API เพื่อดึงข้อมูลโปรไฟล์ของผู้ใช้
+            fetch(`${API_BASE_URL}/profile.php?userId=${userID}`)
+                .then(response => {
+                    // debug ดูว่า response ที่ได้ status code อะไร
+                    console.log("Profile response:", response);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Profile data:", data);
+                    if (data.status === 'success') {
+                        const user = data.user;
+                        document.querySelector('.profile-image').src = user.profileImage || '../image/cat.png';
+                        document.querySelector('.profile-name').textContent = user.Username;
+                        document.querySelector('.profile-email').textContent = user.Email;
+
+                        // หากมี foodPreferences (เก็บในรูปแบบ JSON หรือ comma-separated)
+                        let foodPrefs = [];
+                        if (user.foodPreferences) {
+                            try {
+                                foodPrefs = JSON.parse(user.foodPreferences);
+                            } catch (e) {
+                                foodPrefs = user.foodPreferences.split(',');
+                            }
+                        }
+                        const foodPreferencesContainer = document.querySelector('.food-preferences');
+                        foodPreferencesContainer.innerHTML = "";
+                        foodPrefs.forEach(pref => {
+                            const tag = document.createElement("div");
+                            tag.className = "preference-tag";
+                            tag.innerHTML = `<i class="fas fa-utensils"></i><span>${pref.trim()}</span>`;
+                            foodPreferencesContainer.appendChild(tag);
+                        });
+                    } else {
+                        console.error("Error fetching profile:", data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        });
+
+        // เมื่อผู้ใช้กด Log Out ให้ลบข้อมูลการล็อกอินและ redirect ไปที่หน้า login
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            localStorage.removeItem("userID");
+            localStorage.removeItem("userLoggedIn");
+            // ลบข้อมูลอื่น ๆ ที่เกี่ยวข้อง ถ้ามี
+            window.location.href = "login.html";
+        });
+    </script>
+
+    <!-- API_BASE_URL ควรถูกประกาศไว้ในไฟล์ api.js หรือกำหนดในสคริปต์นี้ -->
+    <script src="../api/api.js"></script>
 </body>
+
 </html>
