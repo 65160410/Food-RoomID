@@ -24,31 +24,26 @@ if (!isset($data['email']) || !isset($data['password'])) {
     exit;
 }
 
-// ตัวอย่างเชื่อมต่อ DB
+// เชื่อมต่อฐานข้อมูล
 include '../config/db.php';
 
-$sql  = "SELECT * FROM users WHERE email = :email LIMIT 1";
+// ### วิธีที่ 1: เขียน SQL ค้นหา email + password ตรงกัน ###
+$sql  = "SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1";
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['email' => $data['email']]);
+$stmt->execute([
+    'email'    => $data['email'],
+    'password' => $data['password'],
+]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// ถ้าหาเจอ แสดงว่า email/password ตรงกัน
 if ($user) {
-    // หากตอนสมัคร เก็บรหัสผ่านด้วย password_hash()
-    if (password_verify($data['password'], $user['password'])) {
-        // ล็อกอินสำเร็จ
-        echo json_encode([
-            "status"  => "success",
-            "message" => "Login successful"
-        ]);
-    } else {
-        // รหัสผ่านผิด
-        echo json_encode([
-            "status"  => "error",
-            "message" => "Invalid email or password"
-        ]);
-    }
+    echo json_encode([
+        "status"  => "success",
+        "message" => "Login successful"
+    ]);
 } else {
-    // ไม่พบ email นี้
+    // ไม่พบ หรือ password ไม่ตรง
     echo json_encode([
         "status"  => "error",
         "message" => "Invalid email or password"
