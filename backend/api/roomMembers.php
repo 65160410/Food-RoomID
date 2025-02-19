@@ -1,0 +1,63 @@
+<?php
+// getRoomMembers.php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=utf-8");
+
+// ตรวจสอบว่ามีการส่ง room_name มาหรือไม่
+if (!isset($_GET['room_name'])) {
+    echo json_encode([
+        'status'  => 'error',
+        'message' => 'room_name is required.'
+    ]);
+    exit;
+}
+
+$room_name = trim($_GET['room_name']);
+
+// เชื่อมต่อฐานข้อมูล
+include '../config/db.php';
+
+/*
+  ใช้ UNION query เพื่อดึงข้อมูล:
+  - Host (ผู้สร้างห้อง) จากตาราง rooms กับ users โดยกำหนด isHost เป็น 1
+  - สมาชิกจาก roommembers กับ users โดยกำหนด isHost เป็น 0 (ยกเว้น host เพื่อไม่ให้ซ้ำ)
+*/
+$sql = "SELECT UserID, Username, isHost FROM (
+    SELECT u.UserID, u.Username, 1 AS isHost
+    FROM rooms r
+    JOIN users u ON u.UserID = r.CreatedBy
+    WHERE r.room_name = :room_name
+
+    UNION
+
+    SELECT u.UserID, u.Username, 0 AS isHost
+    FROM rooms r
+    JOIN roommembers rm ON r.RoomID = rm.RoomID
+    JOIN users u ON u.UserID = rm.UserID
+    WHERE r.room_name = :room_name2 AND rm.UserID <> r.CreatedBy
+) AS members";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    ':room_name'  => $room_name,
+    ':room_name2' => $room_name
+]);
+
+$members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($members && count($members) > 0) {
+    echo json_encode([
+        'status'  => 'success',
+        'members' => $members
+    ]);
+} else {
+    echo json_encode([
+        'status'  => 'error',
+        'message' => 'No members found for this room.'
+    ]);
+}
+?>

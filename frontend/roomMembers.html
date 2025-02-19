@@ -40,9 +40,9 @@
         display: flex;
         align-items: center;
         margin-bottom: 10px;
-        border: 2px solid white;
-        padding: 5px;
-        border-radius: 8px;
+        border: 2px solid white; /* เพิ่มกรอบสีขาว */
+        padding: 5px; /* เพิ่มพื้นที่ในกรอบ */
+        border-radius: 8px; /* ทำมุมกรอบให้โค้ง */
       }
 
       .sidebar ul li img {
@@ -317,7 +317,7 @@
                   : "../image/cat.png";
                 const hostLabel = member.isHost == 1 ? " (Host)" : "";
                 li.innerHTML = `<img src="${profileImage}" alt="${member.Username}">
-                                  <span>${member.Username}${hostLabel}</span>`;
+                                    <span>${member.Username}${hostLabel}</span>`;
                 memberList.appendChild(li);
               });
 

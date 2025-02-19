@@ -51,18 +51,17 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // 2) เช็คผลลัพธ์
 if ($user) {
-    // ถ้าเจอ user แสดงว่า email/password ตรงกัน (Plain text)
     echo json_encode([
         "status"  => "success",
-        "message" => "Login successful"
-        // สามารถส่งข้อมูล user_id, token, หรืออื่น ๆ ได้ตามต้องการ
+        "message" => "Login successful",
+        "userID"  => $user['UserID'] // สมมติว่าในฐานข้อมูลคอลัมน์นี้ชื่อ UserID
     ]);
 } else {
-    // ไม่เจอ user (email/password ไม่ตรง)
     echo json_encode([
         "status"  => "error",
         "message" => "Invalid email or password"
     ]);
 }
+
 
 exit;

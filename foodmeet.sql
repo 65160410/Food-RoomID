@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2025 at 10:20 AM
+-- Generation Time: Feb 19, 2025 at 03:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -45,7 +45,7 @@ CREATE TABLE `menuitems` (
 CREATE TABLE `menupreferences` (
   `UserID` int(11) NOT NULL,
   `ItemID` int(11) NOT NULL,
-  `PreferenceType` tinyint(4) NOT NULL CHECK (`PreferenceType` in (-1,0,1))
+  `PreferenceType` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -77,7 +77,7 @@ CREATE TABLE `reviews` (
   `ReviewID` int(11) NOT NULL,
   `UserID` int(11) DEFAULT NULL,
   `RestaurantID` int(11) DEFAULT NULL,
-  `Rating` int(11) DEFAULT NULL CHECK (`Rating` between 1 and 5),
+  `Rating` int(11) DEFAULT NULL,
   `Comment` text DEFAULT NULL,
   `ReviewTime` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -94,6 +94,13 @@ CREATE TABLE `roommembers` (
   `JoinedAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `roommembers`
+--
+
+INSERT INTO `roommembers` (`RoomID`, `UserID`, `JoinedAt`) VALUES
+(25, 21, '2025-02-19 10:12:58');
+
 -- --------------------------------------------------------
 
 --
@@ -104,8 +111,21 @@ CREATE TABLE `rooms` (
   `RoomID` int(11) NOT NULL,
   `CreatedBy` int(11) DEFAULT NULL,
   `CreatedAt` timestamp NOT NULL DEFAULT current_timestamp(),
-  `RoomCode` varchar(20) NOT NULL
+  `RoomCode` varchar(20) NOT NULL,
+  `room_name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rooms`
+--
+
+INSERT INTO `rooms` (`RoomID`, `CreatedBy`, `CreatedAt`, `RoomCode`, `room_name`, `description`) VALUES
+(25, 13, '2025-02-19 10:11:39', 'AGC6QP', 'q12', NULL),
+(26, 21, '2025-02-19 10:13:29', 'ZB617F', 'q12', NULL),
+(27, 21, '2025-02-19 10:19:20', 'PZP3W1', 'q12', NULL),
+(28, 21, '2025-02-19 10:20:40', 'XZ5YXO', 'q12', NULL),
+(29, 21, '2025-02-19 11:42:24', 'OU076M', 'aa', NULL);
 
 -- --------------------------------------------------------
 
@@ -127,7 +147,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`UserID`, `Preferences`, `DietaryRestrictions`, `Username`, `Password`, `Email`) VALUES
-(9, NULL, NULL, 'sekson', '$2y$10$QAoDWVrKpXq2HS4z.pkzGeJP85XCy1l32nVSAlAogTMwQlpr6bnju', 'admin@go.buu.ac.th');
+(13, NULL, NULL, 'Seksant Sukkasem', '1234', 'admin1234@gmail.com'),
+(21, NULL, NULL, 'Seksant', '123', 'admin@go.buu.ac.th');
 
 -- --------------------------------------------------------
 
@@ -139,7 +160,9 @@ CREATE TABLE `votes` (
   `UserID` int(11) NOT NULL,
   `RoomID` int(11) NOT NULL,
   `RestaurantID` int(11) NOT NULL,
-  `VoteTime` timestamp NOT NULL DEFAULT current_timestamp()
+  `VoteTime` timestamp NOT NULL DEFAULT current_timestamp(),
+  `foodName` varchar(255) NOT NULL,
+  `vote` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -202,6 +225,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `votes`
   ADD PRIMARY KEY (`UserID`,`RoomID`,`RestaurantID`),
+  ADD UNIQUE KEY `unq_user_room_restaurant` (`UserID`,`RoomID`,`RestaurantID`,`foodName`),
   ADD KEY `RoomID` (`RoomID`),
   ADD KEY `RestaurantID` (`RestaurantID`);
 
@@ -231,13 +255,13 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `RoomID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `RoomID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables

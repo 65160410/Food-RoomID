@@ -19,8 +19,8 @@ header('Content-Type: application/json; charset=utf-8');
 // รับข้อมูล JSON จาก Frontend
 $data = json_decode(file_get_contents('php://input'), true);
 
-// ตรวจสอบว่ามีการส่ง roomName มาหรือไม่
-if (!isset($data['roomName'])) {
+// ตรวจสอบว่ามีการส่ง roomName และ createdBy มาหรือไม่
+if (!isset($data['roomName']) || empty(trim($data['roomName']))) {
     echo json_encode([
         'status'  => 'error',
         'message' => 'roomName is required.'
@@ -28,26 +28,49 @@ if (!isset($data['roomName'])) {
     exit;
 }
 
-$roomName  = $data['roomName'];
-$createdBy = $data['createdBy'] ?? 0; // ถ้าไม่ได้ส่งมา ให้ใช้ 0
+if (!isset($data['createdBy']) || intval($data['createdBy']) <= 0) {
+    echo json_encode([
+        'status'  => 'error',
+        'message' => 'Valid UserID is required.'
+    ]);
+    exit;
+}
 
-// สร้าง RoomCode แบบสุ่ม 6 ตัวอักษร/ตัวเลข
-$roomCode = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 6);
+$roomName  = trim($data['roomName']);
+$createdBy = intval($data['createdBy']);
+
+/**
+ * ฟังก์ชันสำหรับสร้างรหัสห้องที่ไม่ซ้ำกัน
+ * โดยในที่นี้จะสร้างรหัสความยาว 6 ตัวอักษร (สามารถปรับเปลี่ยนได้ตามต้องการ)
+ */
+function generateRoomCode($length = 6) {
+    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $code = '';
+    for ($i = 0; $i < $length; $i++) {
+        $code .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $code;
+}
+
+// สร้างรหัสห้องใหม่
+$roomCode = generateRoomCode();
 
 // เชื่อมต่อฐานข้อมูลด้วย PDO (ไฟล์ db.php ควรอยู่ใน path ที่ถูกต้อง)
 include '../config/db.php';
 
-$sql = "INSERT INTO rooms (room_name, CreatedBy, RoomCode) VALUES (:room_name, :createdBy, :roomCode)";
+// คำสั่ง SQL สำหรับ Insert ห้องใหม่ (รวมทั้ง RoomCode ที่ไม่ซ้ำกัน)
+$sql = "INSERT INTO rooms (room_name, RoomCode, CreatedBy) VALUES (:room_name, :roomCode, :createdBy)";
 
 try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         ':room_name' => $roomName,
-        ':createdBy' => $createdBy,
-        ':roomCode' => $roomCode
+        ':roomCode' => $roomCode,
+        ':createdBy' => $createdBy
     ]);
     
-    // ดึง RoomID ที่เพิ่ง insert
+    // ดึง RoomID ที่เพิ่ง Insert
     $newRoomId = $pdo->lastInsertId();
     error_log("createdBy: " . $createdBy);
 
@@ -63,3 +86,4 @@ try {
         'message' => 'Failed to create room: ' . $e->getMessage()
     ]);
 }
+?>
