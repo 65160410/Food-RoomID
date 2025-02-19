@@ -1,5 +1,5 @@
 <?php
-// เปิด error reporting ช่วงพัฒนา
+// เปิด error reporting ช่วงพัฒนา (ควรปิดหรือปรับเป็น error_reporting(0) ใน production)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -8,8 +8,9 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
+// ตรวจสอบว่าเป็น Preflight (OPTIONS) หรือไม่
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit; // preflight request จบได้เลย
+    exit; // ถ้าเป็น OPTIONS ให้จบได้เลย
 }
 
 // เชื่อมต่อฐานข้อมูล
@@ -25,18 +26,20 @@ $email = $data['email'] ?? '';
 $password = $data['password'] ?? '';
 $confirm = $data['confirm-password'] ?? '';
 
-// ตรวจสอบความถูกต้อง
+// ตรวจสอบความถูกต้องเบื้องต้น
 if (empty($fullname) || empty($email) || empty($password) || empty($confirm)) {
     echo json_encode(["status" => "error", "message" => "All fields are required"]);
     exit;
 }
+
 if ($password !== $confirm) {
     echo json_encode(["status" => "error", "message" => "Passwords do not match"]);
     exit;
 }
 
-// เข้ารหัสรหัสผ่าน
-$password_hashed = password_hash($password, PASSWORD_DEFAULT);
+// เปลี่ยนเป็นเก็บรหัสผ่านแบบ Plain Text (ไม่เข้ารหัส) **ไม่ปลอดภัย**
+// $password_hashed = password_hash($password, PASSWORD_DEFAULT); // ยกเลิก
+$password_plain = $password;
 
 // ตรวจสอบอีเมลซ้ำ
 $sql = "SELECT * FROM users WHERE Email = :email LIMIT 1";
@@ -49,13 +52,13 @@ if ($user) {
     exit;
 }
 
-// สร้างผู้ใช้ใหม่
+// บันทึกผู้ใช้ใหม่ โดยเก็บรหัสผ่านเป็น plain text
 $sql = "INSERT INTO users (Email, Username, Password) VALUES (:email, :fullname, :password)";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([
-    'email' => $email,
+    'email'    => $email,
     'fullname' => $fullname,
-    'password' => $password_hashed
+    'password' => $password_plain
 ]);
 
 // สมัครสำเร็จ

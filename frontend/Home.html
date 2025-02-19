@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FoodMate - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        // ตรวจสอบสถานะการล็อกอินก่อนโหลดเนื้อหาของหน้า
+        if(localStorage.getItem('userLoggedIn') !== 'true'){
+          window.location.href = "login.html";
+        }
+      </script>
     <style>
         * {
             margin: 0;
@@ -257,10 +263,10 @@
         </div>
         
         <div class="top-actions">
-            <button class="btn btn-primary">
+            <a href="createRoom.html" class="btn btn-primary">
                 <i class="fas fa-plus"></i>
                 Create New Room
-            </button>
+            </a>
             <a href="history.html" class="btn btn-outline">
                 <i class="fas fa-history"></i>
                 History
@@ -311,20 +317,21 @@
             <h2>Quick Actions</h2>
             
             <div class="actions-grid">
-                <a href="#" class="action-card">
+                <a href="createRoom.html" class="action-card">
                     <i class="fas fa-plus-circle"></i>
                     <span>Create Room</span>
                 </a>
-                <a href="#" class="action-card">
+                <a href="joinRoom.html" class="action-card">
                     <i class="fas fa-users"></i>
                     <span>Join Room</span>
                 </a>
-                <a href="#" class="action-card">
+                <a href="current.html" class="action-card">
                     <i class="fas fa-star"></i>
                     <span>Favorites</span>
                 </a>
             </div>
         </div>
     </div>
+    
 </body>
 </html>

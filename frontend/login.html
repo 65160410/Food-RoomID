@@ -1,212 +1,164 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>เข้าสู่ระบบ | FoodMeet</title>
-    <style>
-      body {
-        background-color: #fef6ee;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
+<head>
+  <meta charset="UTF-8">
+  <title>เข้าสู่ระบบ | FoodMeet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #fef6ee;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      width: 380px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-box h2 {
+      margin-bottom: 5px;
+      color: #333;
+    }
+    .form-box p {
+      font-size: 14px;
+      color: gray;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px;
+    }
+    label {
+      text-align: left;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    input {
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .options {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .forgot-password {
+      color: #ff6b35;
+      text-decoration: none;
+    }
+    .main-btn {
+      background-color: #ff6b35;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 15px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .switch-auth {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <!-- โลโก้หรือรูปภาพประกอบ -->
+    <img src="../image/Screenshot_2025-02-17_013707.png" alt="login" class="profile-image">
 
-      .form-box {
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        text-align: center;
-        width: 380px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-      }
+    <h2>Welcome Back!</h2>
+    <p>Sign in to continue to Restaurant Finder</p>
 
-      .form-box h2 {
-        margin-bottom: 5px;
-        color: #333;
-      }
-
-      .form-box p {
-        font-size: 14px;
-        color: gray;
-      }
-
-      .social-login {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-bottom: 15px;
-      }
-
-      .social-btn {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-      }
-
-      .google {
-        background-color: white;
-        color: black;
-        border: 1px solid #ccc;
-      }
-
-      .facebook {
-        background-color: white;
-        color: black;
-        border: 1px solid #ccc;
-      }
-
-      .divider {
-        margin: 15px 0;
-        font-size: 14px;
-        color: gray;
-        position: relative;
-      }
-
-      .divider::before,
-      .divider::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        width: 40%;
-        height: 1px;
-        background: #ccc;
-      }
-
-      .divider::before {
-        left: 0;
-      }
-
-      .divider::after {
-        right: 0;
-      }
-
-      form {
-        display: flex;
-        flex-direction: column;
-      }
-
-      label {
-        text-align: left;
-        font-size: 14px;
-        margin-top: 10px;
-      }
-
-      input {
-        padding: 10px;
-        margin: 5px 0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 14px;
-      }
-
-      .options {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        margin-top: 10px;
-      }
-
-      .forgot-password {
-        color: #ff6b35;
-        text-decoration: none;
-      }
-
-      .main-btn {
-        background-color: #ff6b35;
-        color: white;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        margin-top: 15px;
-        cursor: pointer;
-        font-size: 16px;
-      }
-
-      .switch-auth {
-        margin-top: 15px;
-        font-size: 14px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="form-box">
-      <h2>Welcome Back!</h2>
-      <p>Sign in to continue to Restaurant Finder</p>
-      <div class="social-login">
-        <button class="social-btn google">G Google</button>
-        <button class="social-btn facebook">f Facebook</button>
+    <!-- ฟอร์มสำหรับล็อกอิน -->
+    <form id="login-form">
+      <label for="email">Email Address</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="name@example.com"
+        required
+      />
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+        required
+      />
+      <div class="options">
+        <label><input type="checkbox" name="remember" /> Remember me</label>
+        <a href="#" class="forgot-password">Forgot Password?</a>
       </div>
-      <div class="divider">or</div>
-      <form id="login-form">
-        <label for="email">Email Address</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="name@example.com"
-          required
-        />
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Enter your password"
-          required
-        />
-        <div class="options">
-          <label><input type="checkbox" name="remember" /> Remember me</label>
-          <a href="#" class="forgot-password">Forgot Password?</a>
-        </div>
-        <button type="button" id="btn-login" class="main-btn">Login</button>
-      </form>
-      <p class="switch-auth">
-        Don't have an account? <a href="register.html">Sign Up</a>
-      </p>
-    </div>
+      <button type="button" id="btn-login" class="main-btn">Login</button>
+    </form>
 
-    <script>
-      document
-        .getElementById("btn-login")
-        .addEventListener("click", async () => {
-          const email = document.getElementById("email").value;
-          const password = document.getElementById("password").value;
+    <p class="switch-auth">
+      Don't have an account? <a href="register.html">Sign Up</a>
+    </p>
+  </div>
 
-          try {
-            const response = await fetch(
-              "http://localhost/Food-ROOMID/backend/api/login.php",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  email: "test@example.com",
-                  password: "1234",
-                }),
-              }
-            );
-
-            const result = await response.json();
-            console.log(result);
-
-            if (result.status === "success") {
-              alert("Login successful");
-              // เปลี่ยนเส้นทางไปหน้า Home หรือหน้าที่ต้องการ
-              window.location.href = "home.html";
-            } else {
-              alert(result.message);
-            }
-          } catch (error) {
-            console.error(error);
-            alert("An error occurred during login.");
-          }
+  <script>
+    document.getElementById("btn-login").addEventListener("click", async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+    
+      if (!email || !password) {
+        alert("กรุณากรอก Email และ Password");
+        return;
+      }
+    
+      try {
+        const response = await fetch(`${API_BASE_URL}/login.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
         });
+    
+        const result = await response.json();
+        console.log("Login API response:", result);
+    
+        if (result.status === "success") {
+          //alert("Login successful");
+          // บันทึกสถานะล็อกอินและ userID ลงใน localStorage
+          localStorage.setItem('userLoggedIn', 'true');
+          
+          // ตรวจสอบรูปแบบ response ที่ API ส่งกลับมา
+          // ตัวอย่าง: หาก API ส่งกลับ { status: "success", userID: 13, ... }
+          // ให้ใช้:
+          localStorage.setItem('userID', result.userID);
+          // หรือถ้าเป็น { status: "success", user: { userID: 13, ... } } ให้ใช้:
+          // localStorage.setItem('userID', result.user.userID);
+          
+          console.log("Set userID:", localStorage.getItem("userID"));
+          // ตรวจสอบก่อน redirect
+          window.location.href = "home.html";
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("An error occurred during login.");
+      }
+    });
     </script>
-  </body>
+    
+    
+
+  <!-- API_BASE_URL ควรประกาศไว้ใน api.js หรือสคริปต์อื่น -->
+  <script src="../api/api.js"></script>
+</body>
 </html>
