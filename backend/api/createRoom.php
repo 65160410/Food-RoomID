@@ -28,34 +28,30 @@ if (!isset($data['roomName'])) {
     exit;
 }
 
-$roomName  = $data['roomName'];
-$createdBy = $data['createdBy'] ?? 0; // ถ้าไม่ได้ส่งมา ให้ใช้ 0
-
-// สร้าง RoomCode แบบสุ่ม 6 ตัวอักษร/ตัวเลข
-$roomCode = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 6);
+$roomName  = trim($data['roomName']);
+$createdBy = isset($data['createdBy']) ? intval($data['createdBy']) : 0; // ถ้าไม่ได้ส่งมา ให้ใช้ 0
 
 // เชื่อมต่อฐานข้อมูลด้วย PDO (ไฟล์ db.php ควรอยู่ใน path ที่ถูกต้อง)
 include '../config/db.php';
 
-$sql = "INSERT INTO rooms (room_name, CreatedBy, RoomCode) VALUES (:room_name, :createdBy, :roomCode)";
+// คำสั่ง SQL สำหรับ Insert ห้องใหม่
+$sql = "INSERT INTO rooms (room_name, CreatedBy) VALUES (:room_name, :createdBy)";
 
 try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        ':room_name' => $roomName,
-        ':createdBy' => $createdBy,
-        ':roomCode' => $roomCode
+        ':room_name'  => $roomName,
+        ':createdBy'  => $createdBy
     ]);
     
-    // ดึง RoomID ที่เพิ่ง insert
+    // ดึง RoomID ที่เพิ่ง Insert
     $newRoomId = $pdo->lastInsertId();
     error_log("createdBy: " . $createdBy);
 
     echo json_encode([
         'status'   => 'success',
         'message'  => 'Room created successfully.',
-        'RoomID'   => $newRoomId,
-        'RoomCode' => $roomCode
+        'RoomID'   => $newRoomId
     ]);
 } catch (PDOException $e) {
     echo json_encode([
@@ -63,3 +59,4 @@ try {
         'message' => 'Failed to create room: ' . $e->getMessage()
     ]);
 }
+?>

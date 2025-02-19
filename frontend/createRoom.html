@@ -76,14 +76,22 @@
                 return;
             }
     
+            // ดึง userID จาก localStorage (ตรวจสอบ key ให้ตรงกับที่บันทึกไว้ตอน login)
+            const userID = localStorage.getItem('userID');
+            if (!userID) {
+                alert("User not found. Please login again.");
+                window.location.href = "login.html";
+                return;
+            }
+    
             try {
-                // เรียก API createRoom.php ผ่าน POST ส่งเฉพาะ roomName (และ createdBy หากต้องการ)
+                // เรียก API createRoom.php ผ่าน POST ส่ง roomName และ createdBy (userID)
                 const response = await fetch(`${API_BASE_URL}/createRoom.php`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         roomName,
-                        createdBy: localStorage.getItem('userId') || 13
+                        createdBy: userID
                     }),
                 });
     
@@ -102,6 +110,7 @@
             }
         });
     </script>
+    
     <script src="../api/api.js"></script>
     
 </body>
