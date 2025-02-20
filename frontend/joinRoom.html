@@ -173,6 +173,50 @@
         alert("Please enter a valid room code.");
       }
     }
+    document.addEventListener("DOMContentLoaded", function () {
+  // ตรวจสอบข้อมูล Guest
+  const guestID = localStorage.getItem("guestID");
+  const guestName = localStorage.getItem("guestName");
+  const guestAvatar = localStorage.getItem("guestAvatar");
+
+  if (!guestID || !guestName) {
+    // ถ้าไม่มีข้อมูล Guest redirect ไปที่ modeGuest.html
+    window.location.href = "modeGuest.html";
+    return;
+  }
+
+  // ตอนนี้ Guest มีข้อมูลแล้ว ให้ดำเนินการสร้างห้อง (เรียก API createRoom.php)
+  // ตัวอย่าง: เมื่อ Guest กดปุ่ม "สร้างห้อง"
+  document.getElementById("createRoomBtn").addEventListener("click", function () {
+    const roomName = document.getElementById("roomName").value.trim();
+    if (!roomName) {
+      alert("กรุณากรอกชื่อห้อง");
+      return;
+    }
+    
+    // ส่งข้อมูล Guest ไปกับข้อมูลห้อง เพื่อสร้างห้องโดย Guest
+    fetch(`${API_BASE_URL}/createRoom.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        roomName: roomName,
+        createdBy: guestID, // ใช้ guestID เป็น host
+        guestName: guestName, // ส่งชื่อ Guest
+        guestAvatar: guestAvatar // ส่งรูปโปรไฟล์ของ Guest
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success") {
+          // redirect ไปยังห้องสนทนา
+          window.location.href = `roomMembers.html?roomID=${data.RoomID}&roomCode=${data.RoomCode}&host=${guestID}`;
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch(error => console.error("Error creating room:", error));
+  });
+});
 
 
   </script>

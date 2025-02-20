@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guest Setup - FoodMeet</title>
+  <style>
+    /* CSS สำหรับ Guest Setup */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffeedc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .setup-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 350px;
+    }
+    .setup-card h2 {
+      color: #ff6b35;
+      margin-bottom: 20px;
+    }
+    .setup-card input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .avatar-selection {
+      margin-bottom: 15px;
+    }
+    .avatar-selection p {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    .avatar-option {
+      display: inline-block;
+      margin: 5px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      overflow: hidden;
+    }
+    .avatar-option.selected {
+      border-color: #ff6b35;
+    }
+    .avatar-option img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-group button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #createRoomBtn {
+      background-color: #ff6b35;
+      color: white;
+    }
+    #joinRoomBtn {
+      background-color: #fff;
+      color: #ff6b35;
+      border: 2px solid #ff6b35;
+    }
+  </style>
+</head>
+<body>
+  <div class="setup-card">
+    <h2>ตั้งค่าข้อมูล Guest</h2>
+    <input type="text" id="guestName" placeholder="กรอกชื่อของคุณ" />
+    <div class="avatar-selection">
+      <p>เลือกรูปโปรไฟล์:</p>
+      <div class="avatar-option" data-avatar="https://i.pravatar.cc/150?img=1">
+        <img src="https://i.pravatar.cc/150?img=1" alt="Avatar 1">
+      </div>
+      <div class="avatar-option" data-avatar="https://i.pravatar.cc/150?img=2">
+        <img src="https://i.pravatar.cc/150?img=2" alt="Avatar 2">
+      </div>
+      <div class="avatar-option" data-avatar="https://i.pravatar.cc/150?img=3">
+        <img src="https://i.pravatar.cc/150?img=3" alt="Avatar 3">
+      </div>
+      <div class="avatar-option" data-avatar="https://i.pravatar.cc/150?img=4">
+        <img src="https://i.pravatar.cc/150?img=4" alt="Avatar 4">
+      </div>
+      <div class="avatar-option" data-avatar="https://i.pravatar.cc/150?img=5">
+        <img src="https://i.pravatar.cc/150?img=5" alt="Avatar 5">
+      </div>
+    </div>
+    <div class="btn-group">
+      <button id="createRoomBtn">สร้างห้องสนทนา</button>
+      <button id="joinRoomBtn">เข้าร่วมห้อง</button>
+    </div>
+  </div>
+
+  <script>
+    async function createGuestAccount() {
+      const guestName = document.getElementById("guestName").value.trim();
+      if (!guestName) {
+        alert("กรุณากรอกชื่อของคุณ");
+        return null;
+      }
+      const guestAvatar = getSelectedAvatar(); // ฟังก์ชันสำหรับดึง Avatar ที่เลือก
+      try {
+        const response = await fetch(`${API_BASE_URL}/createGuest.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            guestName: guestName,
+            guestAvatar: guestAvatar
+          })
+        });
+        const result = await response.json();
+        if (result.status === "success") {
+          return result.guestUserId; // Guest UserID จากฐานข้อมูล (เป็นตัวเลข)
+        } else {
+          alert(result.message);
+          return null;
+        }
+      } catch (error) {
+        console.error("Error creating guest account:", error);
+        return null;
+      }
+    }
+  
+    document.getElementById("createRoomBtn").addEventListener("click", async function () {
+      const guestUserId = await createGuestAccount();
+      if (guestUserId) {
+        localStorage.setItem("guestUserID", guestUserId);
+        // Redirect ไป createRoom.html; ในหน้านั้นเมื่อเรียก API createRoom.php
+        // ให้ส่ง guestUserID นี้เป็น createdBy
+        window.location.href = "createRoom.html";
+      }
+    });
+  
+    document.getElementById("joinRoomBtn").addEventListener("click", async function () {
+      const guestUserId = await createGuestAccount();
+      if (guestUserId) {
+        localStorage.setItem("guestUserID", guestUserId);
+        window.location.href = "joinRoom.html";
+      }
+    });
+  </script>
+  
+  <script src="../api/api.js"></script>
+</body>
+</html>
