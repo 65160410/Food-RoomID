@@ -382,6 +382,41 @@
           })
           .catch((error) => console.error("Error:", error));
       }
+      function updateMemberList(roomID) {
+        fetch(`${API_BASE_URL}/roomMembers.php?roomID=` + encodeURIComponent(roomID))
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              document.getElementById("roomTitle").textContent = "Food Group #" + data.room_name;
+              const members = data.members;
+              const memberList = document.getElementById("memberList");
+              memberList.innerHTML = ""; // ล้างรายการเก่าออก
+
+              members.forEach((member) => {
+                const li = document.createElement("li");
+                const profileImage = member.profileImage ? member.profileImage : "../image/cat.png";
+                const hostLabel = member.isHost == 1 ? " (Host)" : "";
+                li.innerHTML = `<img src="${profileImage}" alt="${member.Username}">
+                              <span>${member.Username}${hostLabel}</span>`;
+                memberList.appendChild(li);
+              });
+              document.getElementById("memberCount").textContent = "Members (" + members.length + ")";
+            } else {
+              console.error("Error fetching room members:", data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // เรียกใช้ฟังก์ชัน updateMemberList ทุก ๆ 5 วินาที
+      setInterval(() => {
+        const params = new URLSearchParams(window.location.search);
+        const roomID = params.get("roomID");
+        if (roomID) {
+          updateMemberList(roomID);
+        }
+      }, 5000); // 5000 มิลลิวินาที = 5 วินาที
+
     });
   </script>
 
