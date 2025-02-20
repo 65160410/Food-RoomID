@@ -114,6 +114,7 @@
 </head>
 
 <body>
+  
   <div class="container">
     <div class="card">
       <h2>Join Room</h2>
@@ -134,44 +135,44 @@
 
   <script>
     function joinRoom() {
-  var roomCode = document.getElementById("roomCode").value.trim();
+      var roomCode = document.getElementById("roomCode").value.trim();
 
-  // ดึงค่า userID จาก URL หรือจาก localStorage
-  const params = new URLSearchParams(window.location.search);
-  let userID = params.get("userID") || localStorage.getItem("userID");
+      // ดึงค่า userID จาก URL หรือจาก localStorage
+      const params = new URLSearchParams(window.location.search);
+      let userID = params.get("userID") || localStorage.getItem("userID");
 
-  if (!userID) {
-    alert("UserID is missing.");
-    return;
-  }
+      if (!userID) {
+        alert("UserID is missing.");
+        return;
+      }
 
-  if (roomCode) {
-    // ส่งข้อมูลไปที่ backend เพื่อเช็คการเข้าร่วมห้อง
-    fetch(`${API_BASE_URL}/joinRoom.php`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        room_name: roomCode,  // ส่ง room_name ที่รับจากผู้ใช้
-        joinerId: userID      // ส่ง joinerId (UserID) ที่ได้จาก URL หรือ localStorage
-      })
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === 'success') {
-          alert(data.message);
-          // เปลี่ยนหน้าไปที่ห้องนั้นๆ
-          window.location.href = `roomMembers.html?roomID=${data.hostId}`;
-        } else {
-          alert(data.message);
-        }
-      })
-      .catch((error) => console.error("Error:", error));
-  } else {
-    alert("Please enter a valid room code.");
-  }
-}
+      if (roomCode) {
+        // ส่งข้อมูลไปที่ backend เพื่อเช็คการเข้าร่วมห้อง
+        fetch(`${API_BASE_URL}/joinRoom.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            room_name: roomCode,  // ส่ง room_name ที่รับจากผู้ใช้
+            joinerId: userID      // ส่ง joinerId (UserID) ที่ได้จาก URL หรือ localStorage
+          })
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === 'success') {
+              alert(data.message);
+              // เปลี่ยนหน้าไปที่ห้องนั้นๆ
+              window.location.href = `roomMembers.html?roomID=${data.hostId}`;
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      } else {
+        alert("Please enter a valid room code.");
+      }
+    }
 
 
   </script>
