@@ -1,5 +1,5 @@
 <?php
-// getRoomMembers.php
+// roomMembers.php 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -7,19 +7,35 @@ error_reporting(E_ALL);
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=utf-8");
 
-// ตรวจสอบว่ามีการส่ง room_name มาหรือไม่
-if (!isset($_GET['room_name'])) {
+// ตรวจสอบว่ามีการส่ง roomID มาหรือไม่
+if (!isset($_GET['roomID'])) {
     echo json_encode([
         'status'  => 'error',
-        'message' => 'room_name is required.'
+        'message' => 'roomID is required.'
     ]);
     exit;
 }
 
-$room_name = trim($_GET['room_name']);
+$roomID = trim($_GET['roomID']);
 
 // เชื่อมต่อฐานข้อมูล
 include '../config/db.php';
+
+// ดึง room_name จากตาราง rooms โดยใช้ roomID
+$sql = "SELECT room_name FROM rooms WHERE RoomID = :roomID LIMIT 1";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([':roomID' => $roomID]);
+$room = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$room) {
+    echo json_encode([
+        'status'  => 'error',
+        'message' => 'Room not found.'
+    ]);
+    exit;
+}
+
+$room_name = $room['room_name'];
 
 /*
   ใช้ UNION query เพื่อดึงข้อมูล:
@@ -51,8 +67,9 @@ $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if ($members && count($members) > 0) {
     echo json_encode([
-        'status'  => 'success',
-        'members' => $members
+        'status'    => 'success',
+        'members'   => $members,
+        'room_name' => $room_name // ส่งกลับ room_name เพื่อใช้แสดงผลในฝั่ง client
     ]);
 } else {
     echo json_encode([

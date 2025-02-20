@@ -16,26 +16,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 header('Content-Type: application/json; charset=utf-8');
 
-// รับข้อมูล JSON จาก Frontend
+// รับข้อมูล JSON จาก body
 $data = json_decode(file_get_contents('php://input'), true);
 
-// ตรวจสอบว่ามี room_name และ joinerId ถูกส่งมาหรือไม่
-if (!isset($data['room_name']) || !isset($data['joinerId'])) {
+// ตรวจสอบว่า room_name ถูกส่งมาหรือไม่
+$room_name = isset($data['room_name']) ? $data['room_name'] : null;
+if (!$room_name) {
+    // ถ้าไม่พบ room_name ใน JSON payload ให้ลองตรวจสอบใน URL
+    $room_name = isset($_GET['room_name']) ? $_GET['room_name'] : null;
+}
+
+if (!$room_name) {
     echo json_encode([
         'status'  => 'error',
-        'message' => 'room_name and joinerId are required.'
+        'message' => 'room_name is required.'
     ]);
     exit;
 }
 
-$room_name = trim($data['room_name']);
-$joinerId  = intval($data['joinerId']);
+// ตรวจสอบ joinerId จาก JSON payload หรือ URL
+if (isset($data['joinerId'])) {
+    $joinerId = intval($data['joinerId']);
+} elseif (isset($data['userID'])) {
+    $joinerId = intval($data['userID']);
+} else {
+    $joinerId = isset($_GET['userID']) ? intval($_GET['userID']) : null;
+}
+
+if (!$joinerId) {
+    echo json_encode([
+        'status'  => 'error',
+        'message' => 'UserID (joinerId) is missing.'
+    ]);
+    exit;
+}
+
 
 // เชื่อมต่อฐานข้อมูลด้วย PDO (ตรวจสอบให้แน่ใจว่า path ถูกต้อง)
 include '../config/db.php';
 
 // ค้นหาห้องด้วย room_name
-$sql = "SELECT RoomID, CreatedBy FROM rooms WHERE room_name = :room_name";
+$sql = "SELECT RoomID, RoomID FROM rooms WHERE room_name = :room_name";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([':room_name' => $room_name]);
 $room = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -44,16 +65,6 @@ if (!$room) {
     echo json_encode([
         'status'  => 'error',
         'message' => 'Room not found.'
-    ]);
-    exit;
-}
-
-// (ตัวเลือก) ตรวจสอบว่า user ที่เข้าร่วมไม่ใช่ host เองหรือไม่
-// ถ้าไม่ต้องการบังคับเงื่อนไขนี้ สามารถลบได้
-if ($room['CreatedBy'] == $joinerId) {
-    echo json_encode([
-        'status'  => 'error',
-        'message' => 'Host cannot join as a participant.'
     ]);
     exit;
 }
@@ -69,7 +80,7 @@ if ($existing) {
     echo json_encode([
         'status'   => 'success',
         'message'  => 'Already joined this room.',
-        'hostId'   => $room['CreatedBy']  // ส่ง host id กลับไปด้วยหากต้องการ
+        'hostId'   => $room['RoomID']  // ส่ง host id กลับไปด้วยหากต้องการ
     ]);
     exit;
 }
@@ -79,14 +90,14 @@ $sql = "INSERT INTO roommembers (RoomID, UserID) VALUES (:roomID, :joinerId)";
 $stmt = $pdo->prepare($sql);
 try {
     $stmt->execute([
-        ':roomID'  => $room['RoomID'],
-        ':joinerId'=> $joinerId
+        ':roomID'   => $room['RoomID'],
+        ':joinerId' => $joinerId
     ]);
 
     echo json_encode([
         'status'   => 'success',
         'message'  => 'Joined room successfully.',
-        'hostId'   => $room['CreatedBy']  // ส่ง host id กลับไปด้วย หากต้องการใช้งานต่อ
+        'hostId'   => $room['RoomID']  // ส่ง host id กลับไปด้วย หากต้องการใช้งานต่อ
     ]);
 } catch (PDOException $e) {
     echo json_encode([
@@ -94,3 +105,4 @@ try {
         'message' => 'Failed to join room: ' . $e->getMessage()
     ]);
 }
+?>

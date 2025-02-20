@@ -287,115 +287,80 @@
       document.addEventListener("DOMContentLoaded", function () {
         // ดึง query parameters จาก URL
         const params = new URLSearchParams(window.location.search);
-        const userID = params.get("userID");
-        const room_name = params.get("room_name");
-
-        console.log("UserID:", userID);
-        console.log("Room Code:", room_name);
-
-        // อัปเดตหัวข้อห้อง
-        document.getElementById("roomTitle").textContent =
-          "Food Group #" + room_name;
-
-        // ดึงรายชื่อสมาชิกจาก API
-        fetch(
-          `${API_BASE_URL}/roomMembers.php?room_name=` +
-            encodeURIComponent(room_name)
-        )
+        const roomID = params.get("roomID");
+        const host = params.get("host"); // หากต้องการใช้งาน host ต่อไป
+      
+        if (!roomID) {
+          console.error("roomID parameter is missing in the URL");
+          return;
+        }
+      
+        console.log("Room ID:", roomID);
+      
+        // ดึงรายชื่อสมาชิกและ room_name จาก API โดยส่ง roomID ไปด้วย
+        fetch(`${API_BASE_URL}/roomMembers.php?roomID=` + encodeURIComponent(roomID))
           .then((response) => response.json())
           .then((data) => {
             if (data.status === "success") {
+              // แสดง room_name ที่ดึงมาจาก DB
+              document.getElementById("roomTitle").textContent = "Food Group #" + data.room_name;
+      
               const members = data.members;
               const memberList = document.getElementById("memberList");
               memberList.innerHTML = ""; // ล้างรายการเก่าออก
-
+      
               members.forEach((member) => {
                 // สร้าง li สำหรับสมาชิกแต่ละคน
                 const li = document.createElement("li");
-                const profileImage = member.profileImage
-                  ? member.profileImage
-                  : "../image/cat.png";
+                const profileImage = member.profileImage ? member.profileImage : "../image/cat.png";
                 const hostLabel = member.isHost == 1 ? " (Host)" : "";
                 li.innerHTML = `<img src="${profileImage}" alt="${member.Username}">
-                                    <span>${member.Username}${hostLabel}</span>`;
+                                  <span>${member.Username}${hostLabel}</span>`;
                 memberList.appendChild(li);
               });
-
-              document.getElementById("memberCount").textContent =
-                "Members (" + members.length + ")";
+      
+              document.getElementById("memberCount").textContent = "Members (" + members.length + ")";
             } else {
               console.error("Error fetching room members:", data.message);
             }
           })
           .catch((error) => console.error("Error:", error));
-
-        // --- เพิ่ม Event Listeners ให้กับปุ่มต่าง ๆ ---
-
-        // ฟังก์ชันส่งคะแนนโหวตสำหรับอาหาร
+      
+        // --- ตัวอย่าง Event Listeners สำหรับปุ่มต่าง ๆ ---
         const voteFood = (voteType) => {
-          // ดึงข้อมูลของอาหารจากหน้า
           const foodName = document.getElementById("foodName").textContent;
-          const foodDescription =
-            document.getElementById("foodDescription").textContent;
-
-          // ส่งคะแนนไปยัง API (vote.php)
+          const foodDescription = document.getElementById("foodDescription").textContent;
+      
           fetch(`${API_BASE_URL}/vote.php`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              userID: userID,
-              room_name: room_name,
+              roomID: roomID,
               foodName: foodName,
               vote: voteType,
             }),
           })
             .then((response) => response.json())
             .then((result) => {
-              // ตรวจสอบให้แน่ใจว่า API ส่งกลับ key 'message'
               alert(result.message);
             })
-            .catch((error) =>
-              console.error("Error sending vote for food:", error)
-            );
+            .catch((error) => console.error("Error sending vote for food:", error));
         };
-
-        document
-          .querySelector(".dislike")
-          .addEventListener("click", function () {
-            voteFood("dislike");
-          });
-        document
-          .querySelector(".neutral")
-          .addEventListener("click", function () {
-            voteFood("neutral");
-          });
-        document.querySelector(".like").addEventListener("click", function () {
-          voteFood("like");
+      
+        document.querySelector(".dislike").addEventListener("click", () => voteFood("dislike"));
+        document.querySelector(".neutral").addEventListener("click", () => voteFood("neutral"));
+        document.querySelector(".like").addEventListener("click", () => voteFood("like"));
+      
+        document.querySelector(".view-results").addEventListener("click", () => {
+          window.location.href = "aiResults.html?roomID=" + encodeURIComponent(roomID);
         });
-
-        // สำหรับการดูผล AI (View AI Results)
-        document
-          .querySelector(".view-results")
-          .addEventListener("click", function () {
-            window.location.href =
-              "aiResults.html?room_name=" +
-              encodeURIComponent(room_name) +
-              "&userID=" +
-              encodeURIComponent(userID);
-          });
-
-        // สำหรับการโหวตร้านอาหาร (Vote for Restaurant)
-        document
-          .querySelector(".vote-restaurant")
-          .addEventListener("click", function () {
-            window.location.href =
-              "voteRestaurant.html?room_name=" +
-              encodeURIComponent(room_name) +
-              "&userID=" +
-              encodeURIComponent(userID);
-          });
+      
+        document.querySelector(".vote-restaurant").addEventListener("click", () => {
+          window.location.href = "voteRestaurant.html?roomID=" + encodeURIComponent(roomID);
+        });
       });
-    </script>
+      </script>
+      
 
     <!-- API_BASE_URL ควรถูกประกาศไว้ในไฟล์ api.js หรือในสคริปต์นี้ -->
     <script src="../api/api.js"></script>
