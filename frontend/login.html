@@ -22,6 +22,7 @@
         text-align: center;
         width: 380px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
       }
 
       .form-box h2 {
@@ -67,24 +68,6 @@
         font-size: 14px;
         color: gray;
         position: relative;
-      }
-
-      .divider::before,
-      .divider::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        width: 40%;
-        height: 1px;
-        background: #ccc;
-      }
-
-      .divider::before {
-        left: 0;
-      }
-
-      .divider::after {
-        right: 0;
       }
 
       form {
@@ -133,13 +116,25 @@
         margin-top: 15px;
         font-size: 14px;
       }
+
+      .back-btn {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        background-color: #ddd;
+        color: #333;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
     <div class="form-box">
-      <!-- แก้ไขพาธของรูปภาพให้ถูกต้อง -->
       <img
-        src="https://cdn.discordapp.com/attachments/1318835776661880883/1340755022903906355/Screenshot_2025-02-17_013707.png?ex=67b382eb&is=67b2316b&hm=64195c4a06d4ac2d157b1cab13cd7f64961e943147114932fc991e640cca76bf&"
+        src="https://media.discordapp.net/attachments/1318835776661880883/1340755022903906355/Screenshot_2025-02-17_013707.png?ex=67bac32b&is=67b971ab&hm=e384a0ebee3de0f9b414268dfc59079adc14b92d4dbd144f52ab919004c8c3d6&=&format=webp&quality=lossless&width=183&height=177"
         alt="Logo"
         width="100"
       />
@@ -184,6 +179,10 @@
       <p class="switch-auth">
         Don't have an account? <a href="register.html">Sign Up</a>
       </p>
+
+      <button class="back-btn" onclick="window.location.href='Landing.html'">
+        Back
+      </button>
     </div>
   </body>
 </html>
