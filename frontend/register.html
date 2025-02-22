@@ -25,6 +25,7 @@
         text-align: center;
         width: 350px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
       }
       h2 {
         margin-bottom: 10px;
@@ -86,6 +87,18 @@
         margin-top: 15px;
         font-size: 14px;
       }
+      .back-btn {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        background-color: #ddd;
+        color: #333;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -142,6 +155,10 @@
         <p class="switch-auth">
           มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
         </p>
+
+        <button class="back-btn" onclick="window.location.href='Landing.html'">
+          Back
+        </button>
       </div>
     </div>
   </body>
