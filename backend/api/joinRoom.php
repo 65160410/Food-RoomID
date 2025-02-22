@@ -23,7 +23,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 // ตรวจสอบว่า room_name ถูกส่งมาหรือไม่
 $room_name = isset($data['room_name']) ? $data['room_name'] : null;
 if (!$room_name) {
-    // ถ้าไม่พบ room_name ใน JSON payload ให้ลองตรวจสอบใน URL
+    // หากไม่พบ room_name ใน JSON payload ให้ลองตรวจสอบใน URL
     $room_name = isset($_GET['room_name']) ? $_GET['room_name'] : null;
 }
 
@@ -35,19 +35,17 @@ if (!$room_name) {
     exit;
 }
 
-// ตรวจสอบ joinerId จาก JSON payload หรือ URL
-if (isset($data['joinerId'])) {
-    $joinerId = intval($data['joinerId']);
-} elseif (isset($data['userID'])) {
-    $joinerId = intval($data['userID']);
+// ตรวจสอบว่า UserID ถูกส่งมาหรือไม่
+if (isset($data['userID'])) {
+    $userID = intval($data['userID']);
 } else {
-    $joinerId = isset($_GET['userID']) ? intval($_GET['userID']) : null;
+    $userID = isset($_GET['userID']) ? intval($_GET['userID']) : null;
 }
 
-if (!$joinerId) {
+if (!$userID) {
     echo json_encode([
         'status'  => 'error',
-        'message' => 'UserID (joinerId) is missing.'
+        'message' => 'UserID is missing.'
     ]);
     exit;
 }
@@ -55,8 +53,7 @@ if (!$joinerId) {
 // เชื่อมต่อฐานข้อมูลด้วย PDO
 include '../config/db.php';
 
-// ค้นหาห้องด้วย room_name
-// (ปรับแก้ query ให้ดึงข้อมูลที่จำเป็น เช่น RoomID, RoomCode และ CreatedBy)
+// ค้นหาห้องด้วย room_name และดึงข้อมูลที่จำเป็น
 $sql = "SELECT RoomID, RoomCode, CreatedBy FROM rooms WHERE room_name = :room_name LIMIT 1";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([':room_name' => $room_name]);
@@ -70,13 +67,26 @@ if (!$room) {
     exit;
 }
 
+// ตรวจสอบว่าผู้ใช้ (UserID) มีอยู่ในตาราง users หรือไม่
+$sqlUser = "SELECT UserID FROM users WHERE UserID = :userID LIMIT 1";
+$stmtUser = $pdo->prepare($sqlUser);
+$stmtUser->execute([':userID' => $userID]);
+$user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    echo json_encode([
+        'status'  => 'error',
+        'message' => 'User not found in the system. Provided ID: ' . $userID
+    ]);
+    exit;
+}
+
 // ตรวจสอบว่าผู้ใช้ได้เข้าร่วมห้องนี้ไปแล้วหรือไม่
-$sql = "SELECT * FROM roommembers WHERE RoomID = :roomID AND UserID = :joinerId";
+$sql = "SELECT * FROM roommembers WHERE RoomID = :roomID AND UserID = :userID";
 $stmt = $pdo->prepare($sql);
-$stmt->execute([':roomID' => $room['RoomID'], ':joinerId' => $joinerId]);
+$stmt->execute([':roomID' => $room['RoomID'], ':userID' => $userID]);
 $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// ถ้าเจอว่ามี record แล้ว ให้ส่งกลับข้อมูลพร้อม status=success
 if ($existing) {
     echo json_encode([
         'status'   => 'success',
@@ -88,13 +98,13 @@ if ($existing) {
     exit;
 }
 
-// ถ้ายังไม่เคย join ให้เพิ่มข้อมูลผู้เข้าร่วมลงในตาราง roommembers
-$sql = "INSERT INTO roommembers (RoomID, UserID) VALUES (:roomID, :joinerId)";
+// เพิ่มข้อมูลลงใน roommembers
+$sql = "INSERT INTO roommembers (RoomID, UserID) VALUES (:roomID, :userID)";
 $stmt = $pdo->prepare($sql);
 try {
     $stmt->execute([
         ':roomID'   => $room['RoomID'],
-        ':joinerId' => $joinerId
+        ':userID'   => $userID
     ]);
 
     echo json_encode([
