@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,6 +16,7 @@
       height: 100vh;
       margin: 0;
     }
+
     .setup-card {
       background: white;
       padding: 30px;
@@ -23,10 +25,12 @@
       text-align: center;
       width: 350px;
     }
+
     .setup-card h2 {
       color: #ff6b35;
       margin-bottom: 20px;
     }
+
     .setup-card input[type="text"] {
       width: 100%;
       padding: 10px;
@@ -35,14 +39,17 @@
       border-radius: 5px;
       font-size: 14px;
     }
+
     .avatar-selection {
       margin-bottom: 15px;
     }
+
     .avatar-selection p {
       margin-bottom: 10px;
       font-size: 14px;
       color: #555;
     }
+
     .avatar-option {
       display: inline-block;
       margin: 5px;
@@ -53,20 +60,24 @@
       height: 60px;
       overflow: hidden;
     }
+
     .avatar-option.selected {
       border-color: #ff6b35;
     }
+
     .avatar-option img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .btn-group {
       display: flex;
       justify-content: center;
       gap: 10px;
       margin-top: 20px;
     }
+
     .btn-group button {
       flex: 1;
       padding: 10px;
@@ -75,10 +86,12 @@
       font-size: 16px;
       cursor: pointer;
     }
+
     #createRoomBtn {
       background-color: #ff6b35;
       color: white;
     }
+
     #joinRoomBtn {
       background-color: #fff;
       color: #ff6b35;
@@ -86,6 +99,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="setup-card">
     <h2>ตั้งค่าข้อมูล Guest</h2>
@@ -121,7 +135,7 @@
         alert("กรุณากรอกชื่อของคุณ");
         return null;
       }
-      const guestAvatar = getSelectedAvatar(); // ฟังก์ชันสำหรับดึง Avatar ที่เลือก
+      const guestAvatar = getSelectedAvatar(); // ฟังก์ชันที่ดึงค่า Avatar ที่เลือก
       try {
         const response = await fetch(`${API_BASE_URL}/createGuest.php`, {
           method: "POST",
@@ -133,7 +147,7 @@
         });
         const result = await response.json();
         if (result.status === "success") {
-          return result.guestUserId; // Guest UserID จากฐานข้อมูล (เป็นตัวเลข)
+          return result.guestUserId; // รับ guestUserId จากฐานข้อมูล
         } else {
           alert(result.message);
           return null;
@@ -143,26 +157,56 @@
         return null;
       }
     }
-  
+
+    // ฟังก์ชันสำหรับเลือก Avatar (ตัวอย่าง)
+    function getSelectedAvatar() {
+      const selectedAvatar = document.querySelector('.avatar-option.selected');
+      return selectedAvatar ? selectedAvatar.getAttribute('data-avatar') : '';
+    }
+
+    // เพิ่ม event listener ให้กับ Avatar Options
+    document.querySelectorAll('.avatar-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+      });
+    });
+
+    // เมื่อกดสร้างห้อง สนใจว่าต้องส่ง guestUserId ไปใน createdBy
     document.getElementById("createRoomBtn").addEventListener("click", async function () {
       const guestUserId = await createGuestAccount();
       if (guestUserId) {
         localStorage.setItem("guestUserID", guestUserId);
-        // Redirect ไป createRoom.html; ในหน้านั้นเมื่อเรียก API createRoom.php
-        // ให้ส่ง guestUserID นี้เป็น createdBy
+        // หลังจากนั้นในหน้า createRoom.html ให้อ่าน guestUserID จาก localStorage
         window.location.href = "createRoom.html";
       }
     });
-  
+
+    // เมื่อกดสร้างห้อง สนใจว่าต้องส่ง guestUserId ไปใน createdBy
     document.getElementById("joinRoomBtn").addEventListener("click", async function () {
       const guestUserId = await createGuestAccount();
       if (guestUserId) {
         localStorage.setItem("guestUserID", guestUserId);
+        // หลังจากนั้นในหน้า createRoom.html ให้อ่าน guestUserID จาก localStorage
         window.location.href = "joinRoom.html";
       }
     });
+    // อ่าน query parameter จาก URL
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+
+    // ถ้า mode คือ createRoom ให้ซ่อนปุ่มเข้าร่วมห้อง
+    if (mode === 'createRoom') {
+      document.getElementById("joinRoomBtn").style.display = "none";
+    }
+    // ถ้า mode คือ joinRoom ให้ซ่อนปุ่มสร้างห้องสนทนา
+    else if (mode === 'joinRoom') {
+      document.getElementById("createRoomBtn").style.display = "none";
+    }
+
   </script>
-  
+
   <script src="../api/api.js"></script>
 </body>
+
 </html>

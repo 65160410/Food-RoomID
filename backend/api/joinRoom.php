@@ -1,4 +1,5 @@
 <?php
+// joinRoom.php 
 // เปิดการแสดง error (สำหรับการพัฒนา)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -51,12 +52,12 @@ if (!$joinerId) {
     exit;
 }
 
-
-// เชื่อมต่อฐานข้อมูลด้วย PDO (ตรวจสอบให้แน่ใจว่า path ถูกต้อง)
+// เชื่อมต่อฐานข้อมูลด้วย PDO
 include '../config/db.php';
 
 // ค้นหาห้องด้วย room_name
-$sql = "SELECT RoomID, RoomID FROM rooms WHERE room_name = :room_name";
+// (ปรับแก้ query ให้ดึงข้อมูลที่จำเป็น เช่น RoomID, RoomCode และ CreatedBy)
+$sql = "SELECT RoomID, RoomCode, CreatedBy FROM rooms WHERE room_name = :room_name LIMIT 1";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([':room_name' => $room_name]);
 $room = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -75,12 +76,14 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([':roomID' => $room['RoomID'], ':joinerId' => $joinerId]);
 $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// ถ้าเจอว่ามี record แล้ว ให้ส่ง status=success แทนการส่ง error
+// ถ้าเจอว่ามี record แล้ว ให้ส่งกลับข้อมูลพร้อม status=success
 if ($existing) {
     echo json_encode([
         'status'   => 'success',
         'message'  => 'Already joined this room.',
-        'hostId'   => $room['RoomID']  // ส่ง host id กลับไปด้วยหากต้องการ
+        'roomID'   => $room['RoomID'],
+        'roomCode' => $room['RoomCode'],
+        'hostId'   => $room['CreatedBy']
     ]);
     exit;
 }
@@ -97,7 +100,9 @@ try {
     echo json_encode([
         'status'   => 'success',
         'message'  => 'Joined room successfully.',
-        'hostId'   => $room['RoomID']  // ส่ง host id กลับไปด้วย หากต้องการใช้งานต่อ
+        'roomID'   => $room['RoomID'],
+        'roomCode' => $room['RoomCode'],
+        'hostId'   => $room['CreatedBy']
     ]);
 } catch (PDOException $e) {
     echo json_encode([

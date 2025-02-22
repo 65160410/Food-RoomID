@@ -336,7 +336,7 @@
         const userID = localStorage.getItem("userID");
 
         if (!roomID || !userID) {
-          alert("Missing roomID or userID.");
+  
           return;
         }
 
@@ -361,27 +361,36 @@
       });
 
       function leaveRoom(roomID) {
-        // สมมติว่าค่า userID ถูกเก็บใน localStorage หรือดึงจาก URL แล้วเก็บในตัวแปร userID
+        // อ่านค่า userID และ guestUserID จาก localStorage
         const userID = localStorage.getItem("userID");
+        const guestID = localStorage.getItem("guestUserID");
+        // เลือกใช้ userID ถ้ามี แต่ถ้าไม่มีให้ใช้ guestUserID
+        const joinerId = userID ? userID : guestID;
+
+        if (!roomID || !joinerId) {
+          alert("Missing parameters: roomID and joinerId are required.");
+          return;
+        }
 
         fetch(`${API_BASE_URL}/leaveRoom.php`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             roomID: roomID,
-            joinerId: userID,
+            joinerId: parseInt(joinerId)
           }),
         })
           .then((response) => response.json())
           .then((data) => {
             alert(data.message);
-            // หาก host ออกจากห้องแล้วและห้องถูกลบ อาจ redirect ไปยังหน้าอื่น เช่น หน้า dashboard
+            // หาก host ออกจากห้องแล้วและห้องถูกลบ ให้ redirect ไปยังหน้าอื่น (เช่นหน้า dashboard)
             if (data.status === "success") {
               window.location.href = "home.html";
             }
           })
           .catch((error) => console.error("Error:", error));
       }
+
       function updateMemberList(roomID) {
         fetch(`${API_BASE_URL}/roomMembers.php?roomID=` + encodeURIComponent(roomID))
           .then((response) => response.json())

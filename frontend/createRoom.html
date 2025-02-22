@@ -179,7 +179,6 @@
       // ดึง userID จาก localStorage (ตรวจสอบ key ให้ตรงกับที่บันทึกไว้ตอน login)
       const userID = localStorage.getItem('userID');
       if (!userID) {
-        alert("User not found. Please login again.");
         window.location.href = "login.html";
         return;
       }
@@ -213,65 +212,72 @@
       }
     });
     document.addEventListener("DOMContentLoaded", function () {
-      // ตรวจสอบข้อมูลสมาชิกและ Guest จาก localStorage
-      const userID = localStorage.getItem("userID");
-      const guestID = localStorage.getItem("guestID");
-      const guestName = localStorage.getItem("guestName");
-      const guestAvatar = localStorage.getItem("guestAvatar");
+    // อ่านข้อมูลสมาชิกและ Guest จาก localStorage
+    const userID = localStorage.getItem("userID");
+    // เปลี่ยน key จาก guestID เป็น guestUserID ให้ตรงกับที่เก็บไว้ตอนสร้าง Guest
+    const guestID = localStorage.getItem("guestUserID");
+    const guestName = localStorage.getItem("guestName");
+    const guestAvatar = localStorage.getItem("guestAvatar");
 
-      // ถ้าไม่มีข้อมูลของสมาชิกหรือ Guest ให้ redirect ไปที่หน้า login หรือ modeGuest.html
-      if (!userID && !guestID) {
-        alert("ไม่พบข้อมูลสมาชิกหรือ Guest กรุณาเข้าสู่ระบบหรือเลือก Guest Mode");
-        // ตัวอย่าง: redirect ไปที่หน้าเข้าสู่ระบบ หรือ Guest Setup
-        window.location.href = "modeGuest.html";
+    // ถ้าไม่มีข้อมูลของสมาชิกหรือ Guest ให้ redirect ไปที่หน้า Guest Setup
+    if (!userID && !guestID) {
+      alert("ไม่พบข้อมูลสมาชิกหรือ Guest กรุณาเข้าสู่ระบบหรือเลือก Guest Mode");
+      window.location.href = "modeGuest.html";
+      return;
+    }
+
+    // ใช้ currentID โดยถ้ามี userID ให้ใช้ userID, มิฉะนั้นใช้ guestID
+    const currentID = userID ? userID : guestID;
+    
+    // ตรวจสอบว่าค่า currentID เป็นตัวเลขที่มากกว่า 0
+    if (parseInt(currentID) <= 0) {
+      alert("Invalid UserID. Please try again.");
+      window.location.href = "modeGuest.html";
+      return;
+    }
+
+    // ตั้ง event listener ให้กับปุ่ม "Create Room"
+    document.getElementById("createRoomBtn").addEventListener("click", async function () {
+      const roomName = document.getElementById("roomName").value.trim();
+      if (!roomName) {
+        alert("กรุณากรอกชื่อห้อง");
         return;
       }
 
-      // กำหนดตัวแปรสำหรับใช้ใน API call
-      const currentID = userID ? userID : guestID; // ใช้ userID หากมี แต่ถ้าไม่มีให้ใช้ guestID
+      // เตรียม payload สำหรับ API call
+      let payload = {
+        roomName: roomName,
+        createdBy: currentID
+      };
 
-      // เมื่อกดปุ่ม "สร้างห้องสนทนา"
-      document.getElementById("createRoomBtn").addEventListener("click", async function () {
-        const roomName = document.getElementById("roomName").value.trim();
-        if (!roomName) {
-          alert("กรุณากรอกชื่อห้อง");
-          return;
+      // กรณี Guest Mode (ไม่มี userID) ให้ส่งข้อมูล Guest เพิ่มเติม
+      if (!userID) {
+        payload.guestName = guestName;
+        payload.guestAvatar = guestAvatar;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/createRoom.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        console.log(result);
+
+        if (result.status === "success") {
+          alert("Room created successfully!");
+          // Redirect ไปยังหน้า roomMembers.html พร้อมส่งข้อมูล RoomID, RoomCode และ host (currentID)
+          window.location.href = `roomMembers.html?roomID=${result.RoomID}&roomCode=${result.RoomCode}&host=${currentID}`;
+        } else {
+          alert(result.message || "Failed to create room.");
         }
-
-        // เตรียม payload โดยส่งข้อมูล Guest เพิ่มเติมหากเป็น Guest Mode
-        let payload = {
-          roomName: roomName,
-          createdBy: currentID
-        };
-
-        if (!userID) {
-          // กรณี Guest Mode ให้ส่งข้อมูลเพิ่มเติมสำหรับ Guest
-          payload.guestName = guestName;
-          payload.guestAvatar = guestAvatar;
-        }
-
-        try {
-          const response = await fetch(`${API_BASE_URL}/createRoom.php`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const result = await response.json();
-          console.log(result);
-
-          if (result.status === "success") {
-            alert("Room created successfully!");
-            // เปลี่ยนเส้นทางไปที่ roomMembers.html โดยส่ง RoomID, RoomCode และ host (currentID)
-            window.location.href = `roomMembers.html?roomID=${result.RoomID}&roomCode=${result.RoomCode}&host=${currentID}`;
-          } else {
-            alert(result.message || "Failed to create room.");
-          }
-        } catch (error) {
-          console.error("Error creating room: ", error);
-          alert("An error occurred while creating the room.");
-        }
-      });
+      } catch (error) {
+        console.error("Error creating room: ", error);
+        alert("An error occurred while creating the room.");
+      }
     });
+  });
 
 
   </script>

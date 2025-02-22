@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<!-- joinRoom.html -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,7 +114,6 @@
 </head>
 
 <body>
-  
   <div class="container">
     <div class="card">
       <h2>Join Room</h2>
@@ -128,100 +127,62 @@
         <i class="fas fa-door-open"></i> Join Room
       </button>
       <p class="footer-text">
-        Don't have a room code? <a href="#">Create a new room</a>
+        Don't have a room code? <a href="modeGuest.html?mode=createRoom">Create a new room</a>
       </p>
     </div>
   </div>
 
   <script>
-    function joinRoom() {
-      var roomCode = document.getElementById("roomCode").value.trim();
 
-      // ดึงค่า userID จาก URL หรือจาก localStorage
-      const params = new URLSearchParams(window.location.search);
-      let userID = params.get("userID") || localStorage.getItem("userID");
-
-      if (!userID) {
-        alert("UserID is missing.");
+function joinRoom() {
+      const roomCode = document.getElementById("roomCode").value.trim();
+      
+      if (!roomCode) {
+        alert("Please enter a valid room code.");
         return;
       }
-
-      if (roomCode) {
-        // ส่งข้อมูลไปที่ backend เพื่อเช็คการเข้าร่วมห้อง
-        fetch(`${API_BASE_URL}/joinRoom.php`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            room_name: roomCode,  // ส่ง room_name ที่รับจากผู้ใช้
-            joinerId: userID      // ส่ง joinerId (UserID) ที่ได้จาก URL หรือ localStorage
-          })
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.status === 'success') {
-              alert(data.message);
-              // เปลี่ยนหน้าไปที่ห้องนั้นๆ
-              window.location.href = `roomMembers.html?roomID=${data.hostId}`;
-            } else {
-              alert(data.message);
-            }
-          })
-          .catch((error) => console.error("Error:", error));
-      } else {
-        alert("Please enter a valid room code.");
+      
+      // สำหรับ Guest mode ให้ใช้ guestUserID จาก localStorage
+      const guestID = localStorage.getItem("guestUserID");
+      if (!guestID) {
+        alert("Guest user not found. Please sign in as Guest.");
+        window.location.href = "modeGuest.html";
+        return;
       }
-    }
-    document.addEventListener("DOMContentLoaded", function () {
-  // ตรวจสอบข้อมูล Guest
-  const guestID = localStorage.getItem("guestID");
-  const guestName = localStorage.getItem("guestName");
-  const guestAvatar = localStorage.getItem("guestAvatar");
-
-  if (!guestID || !guestName) {
-    // ถ้าไม่มีข้อมูล Guest redirect ไปที่ modeGuest.html
-    window.location.href = "modeGuest.html";
-    return;
-  }
-
-  // ตอนนี้ Guest มีข้อมูลแล้ว ให้ดำเนินการสร้างห้อง (เรียก API createRoom.php)
-  // ตัวอย่าง: เมื่อ Guest กดปุ่ม "สร้างห้อง"
-  document.getElementById("createRoomBtn").addEventListener("click", function () {
-    const roomName = document.getElementById("roomName").value.trim();
-    if (!roomName) {
-      alert("กรุณากรอกชื่อห้อง");
-      return;
+      
+      fetch(`${API_BASE_URL}/joinRoom.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          room_name: roomCode,  // ส่งรหัสห้อง (หรือ room_name ตาม API ของคุณ)
+          joinerId: parseInt(guestID)
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            alert(data.message);
+            // Redirect ไปยังหน้าห้องสนทนา (roomMembers.html)
+            window.location.href = `roomMembers.html?roomID=${data.roomID}&roomCode=${data.roomCode}&host=${data.hostId}`;
+          } else {
+            alert(data.message);
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("An error occurred while joining the room.");
+        });
     }
     
-    // ส่งข้อมูล Guest ไปกับข้อมูลห้อง เพื่อสร้างห้องโดย Guest
-    fetch(`${API_BASE_URL}/createRoom.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        roomName: roomName,
-        createdBy: guestID, // ใช้ guestID เป็น host
-        guestName: guestName, // ส่งชื่อ Guest
-        guestAvatar: guestAvatar // ส่งรูปโปรไฟล์ของ Guest
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === "success") {
-          // redirect ไปยังห้องสนทนา
-          window.location.href = `roomMembers.html?roomID=${data.RoomID}&roomCode=${data.RoomCode}&host=${guestID}`;
-        } else {
-          alert(data.message);
-        }
-      })
-      .catch(error => console.error("Error creating room:", error));
-  });
-});
-
-
+    document.addEventListener("DOMContentLoaded", function () {
+      const guestID = localStorage.getItem("guestUserID");
+      const guestName = localStorage.getItem("guestName");
+      
+      if (!guestID || !guestName) {
+        window.location.href = "modeGuest.html?mode=joinRoom";
+      }
+    });
   </script>
-
   <script src="../api/api.js"></script>
 </body>
-
 </html>

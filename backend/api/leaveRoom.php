@@ -1,10 +1,10 @@
 <?php
 // leaveRoom.php
 
-// เปิดการแสดง error (สำหรับการพัฒนา)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -18,7 +18,6 @@ header('Content-Type: application/json; charset=utf-8');
 // รับข้อมูล JSON จาก body
 $data = json_decode(file_get_contents('php://input'), true);
 
-// ตรวจสอบค่าที่จำเป็น
 $roomID   = isset($data['roomID']) ? intval($data['roomID']) : null;
 $joinerId = isset($data['joinerId']) ? intval($data['joinerId']) : null;
 
@@ -30,10 +29,9 @@ if (!$roomID || !$joinerId) {
     exit;
 }
 
-// เชื่อมต่อฐานข้อมูล (ตรวจสอบให้แน่ใจว่าไฟล์ db.php มีการสร้าง PDO connection ไว้ในตัวแปร $pdo)
 include '../config/db.php';
 
-// ดึงข้อมูลห้องเพื่อตรวจสอบว่าใครเป็น host
+// ดึงข้อมูลห้อง
 $sql = "SELECT * FROM rooms WHERE RoomID = :roomID";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([':roomID' => $roomID]);
@@ -47,20 +45,39 @@ if (!$room) {
     exit;
 }
 
-// ตรวจสอบว่า joinerId ที่ส่งมาเป็น host หรือไม่
+// ฟังก์ชันสำหรับลบ Guest ออกจากตาราง users
+function deleteGuestFromUsers($pdo, $joinerId) {
+    // ตรวจสอบ isGuest
+    $sqlUser = "SELECT isGuest FROM users WHERE UserID = :joinerId LIMIT 1";
+    $stmtUser = $pdo->prepare($sqlUser);
+    $stmtUser->execute([':joinerId' => $joinerId]);
+    $userRecord = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+    if ($userRecord && intval($userRecord['isGuest']) === 1) {
+        // ลบออกจากตาราง users
+        $stmtDeleteUser = $pdo->prepare("DELETE FROM users WHERE UserID = :joinerId");
+        $stmtDeleteUser->execute([':joinerId' => $joinerId]);
+    }
+}
+
+// กรณี Host Leave
 if ($room['CreatedBy'] == $joinerId) {
-    // หาก host กำลังออกจากห้อง ให้ลบห้องและสมาชิกทั้งหมดในห้อง
+    // Host กำลังออกจากห้อง
     $pdo->beginTransaction();
     try {
-        // ลบข้อมูลสมาชิกในห้อง (ตาราง roommembers)
+        // ลบสมาชิกทั้งหมดในห้อง
         $stmt = $pdo->prepare("DELETE FROM roommembers WHERE RoomID = :roomID");
         $stmt->execute([':roomID' => $roomID]);
-        
-        // ลบห้องจากตาราง rooms
+
+        // ลบห้อง
         $stmt = $pdo->prepare("DELETE FROM rooms WHERE RoomID = :roomID");
         $stmt->execute([':roomID' => $roomID]);
-        
+
+        // หาก Host เป็น Guest -> ลบออกจาก users
+        deleteGuestFromUsers($pdo, $joinerId);
+
         $pdo->commit();
+
         echo json_encode([
             'status'  => 'success',
             'message' => 'Room deleted successfully because host left.'
@@ -73,9 +90,14 @@ if ($room['CreatedBy'] == $joinerId) {
         ]);
     }
 } else {
-    // หากไม่ใช่ host ให้ลบเฉพาะสมาชิกออกจากห้อง (แต่ในกรณีนี้ เราสนใจเฉพาะกรณี host leave)
+    // Non-host Leave
     $stmt = $pdo->prepare("DELETE FROM roommembers WHERE RoomID = :roomID AND UserID = :joinerId");
-    if ($stmt->execute([':roomID' => $roomID, ':joinerId' => $joinerId])) {
+    $stmt->execute([':roomID' => $roomID, ':joinerId' => $joinerId]);
+
+    if ($stmt->rowCount() > 0) {
+        // ลบ Guest จาก users ถ้าเป็น Guest
+        deleteGuestFromUsers($pdo, $joinerId);
+
         echo json_encode([
             'status'  => 'success',
             'message' => 'Left room successfully.'
@@ -83,8 +105,7 @@ if ($room['CreatedBy'] == $joinerId) {
     } else {
         echo json_encode([
             'status'  => 'error',
-            'message' => 'Failed to leave room.'
+            'message' => 'Failed to leave room or user not found in roommembers.'
         ]);
     }
 }
-?>
