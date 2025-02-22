@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2025 at 03:07 PM
+-- Generation Time: Feb 22, 2025 at 03:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -36,6 +36,62 @@ CREATE TABLE `menuitems` (
   `ImageURL` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `menuitems`
+--
+
+INSERT INTO `menuitems` (`ItemID`, `RestaurantID`, `Description`, `Price`, `ItemName`, `ImageURL`) VALUES
+(1, 1, 'ข้าวผัดหมู ไข่ดาว', 50.00, 'ข้าวผัดหมู', NULL),
+(2, 1, 'ผัดกะเพราหมูสับ ไข่ดาว', 50.00, 'กะเพราหมูสับ', NULL),
+(3, 1, 'หมูทอดกระเทียมพริกไทย', 50.00, 'หมูทอดกระเทียม', NULL),
+(4, 1, 'ข้าวผัดกุ้ง', 60.00, 'ข้าวผัดกุ้ง', NULL),
+(5, 1, 'ผัดพริกแกงไก่', 50.00, 'ผัดพริกแกงไก่', NULL),
+(6, 2, 'แกงเขียวหวานไก่', 40.00, 'แกงเขียวหวาน', NULL),
+(7, 2, 'แกงส้มชะอมไข่', 45.00, 'แกงส้มชะอมไข่', NULL),
+(8, 2, 'ผัดเผ็ดหมู', 45.00, 'ผัดเผ็ดหมู', NULL),
+(9, 2, 'ต้มจืดเต้าหู้หมูสับ', 40.00, 'ต้มจืดเต้าหู้', NULL),
+(10, 2, 'พะแนงหมู', 45.00, 'พะแนงหมู', NULL),
+(11, 3, 'ก๋วยเตี๋ยวเรือหมูน้ำตก', 40.00, 'ก๋วยเตี๋ยวเรือหมู', NULL),
+(12, 3, 'ก๋วยเตี๋ยวเรือเนื้อน้ำตก', 45.00, 'ก๋วยเตี๋ยวเรือเนื้อ', NULL),
+(13, 3, 'ก๋วยเตี๋ยวต้มยำไข่', 50.00, 'ก๋วยเตี๋ยวต้มยำไข่', NULL),
+(14, 3, 'เกาเหลาเนื้อเปื่อย', 50.00, 'เกาเหลาเนื้อเปื่อย', NULL),
+(15, 3, 'เส้นหมี่ลูกชิ้นน้ำใส', 40.00, 'เส้นหมี่ลูกชิ้นน้ำใส', NULL),
+(16, 4, 'ข้าวมันไก่ต้ม', 50.00, 'ข้าวมันไก่ต้ม', NULL),
+(17, 4, 'ข้าวมันไก่ทอด', 50.00, 'ข้าวมันไก่ทอด', NULL),
+(18, 4, 'ข้าวมันไก่รวม', 55.00, 'ข้าวมันไก่รวม', NULL),
+(19, 4, 'ไก่ทอดจานเล็ก', 60.00, 'ไก่ทอด', NULL),
+(20, 4, 'ตับไก่ลวก', 30.00, 'ตับไก่ลวก', NULL),
+(21, 5, 'ราดหน้าหมู', 50.00, 'ราดหน้าหมู', NULL),
+(22, 5, 'ราดหน้าทะเล', 60.00, 'ราดหน้าทะเล', NULL),
+(23, 5, 'ผัดซีอิ๊วหมู', 50.00, 'ผัดซีอิ๊วหมู', NULL),
+(24, 5, 'เส้นใหญ่ผัดขี้เมา', 50.00, 'เส้นใหญ่ผัดขี้เมา', NULL),
+(25, 5, 'คั่วไก่', 55.00, 'คั่วไก่', NULL),
+(26, 6, 'ข้าวต้มหมู', 40.00, 'ข้าวต้มหมู', NULL),
+(27, 6, 'ข้าวต้มปลา', 50.00, 'ข้าวต้มปลา', NULL),
+(28, 6, 'ข้าวต้มทะเล', 55.00, 'ข้าวต้มทะเล', NULL),
+(29, 6, 'ต้มยำกุ้ง', 60.00, 'ต้มยำกุ้ง', NULL),
+(30, 6, 'ยำไข่เค็ม', 40.00, 'ยำไข่เค็ม', NULL),
+(31, 7, 'ข้าวไข่เจียวหมูสับ', 35.00, 'ข้าวไข่เจียวหมูสับ', NULL),
+(32, 7, 'ข้าวไข่เจียวกุ้งสับ', 40.00, 'ข้าวไข่เจียวกุ้งสับ', NULL),
+(33, 7, 'ไข่เจียวแหนม', 40.00, 'ไข่เจียวแหนม', NULL),
+(34, 7, 'ไข่เจียวหมูยอ', 40.00, 'ไข่เจียวหมูยอ', NULL),
+(35, 7, 'ข้าวไข่ข้นกุ้ง', 50.00, 'ข้าวไข่ข้นกุ้ง', NULL),
+(36, 8, 'โจ๊กหมู', 40.00, 'โจ๊กหมู', NULL),
+(37, 8, 'โจ๊กหมูไข่ลวก', 45.00, 'โจ๊กหมูไข่ลวก', NULL),
+(38, 8, 'โจ๊กตับหมู', 45.00, 'โจ๊กตับหมู', NULL),
+(39, 8, 'โจ๊กไก่ฉีก', 45.00, 'โจ๊กไก่ฉีก', NULL),
+(40, 8, 'ปาท่องโก๋', 20.00, 'ปาท่องโก๋', NULL),
+(41, 9, 'ส้มตำไทย', 50.00, 'ส้มตำไทย', NULL),
+(42, 9, 'ส้มตำปูปลาร้า', 50.00, 'ส้มตำปูปลาร้า', NULL),
+(43, 9, 'ส้มตำไข่เค็ม', 55.00, 'ส้มตำไข่เค็ม', NULL),
+(44, 9, 'ไก่ย่างครึ่งตัว', 80.00, 'ไก่ย่าง', NULL),
+(45, 9, 'คอหมูย่าง', 70.00, 'คอหมูย่าง', NULL),
+(46, 10, 'ข้าวหมูแดง', 50.00, 'ข้าวหมูแดง', NULL),
+(47, 10, 'ข้าวหมูกรอบ', 50.00, 'ข้าวหมูกรอบ', NULL),
+(48, 10, 'ข้าวหมูแดงหมูกรอบ', 55.00, 'ข้าวหมูแดงหมูกรอบ', NULL),
+(49, 10, 'เกาเหลาหมูกรอบ', 55.00, 'เกาเหลาหมูกรอบ', NULL),
+(50, 10, 'ไข่ต้มยางมะตูม', 15.00, 'ไข่ต้มยางมะตูม', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -66,6 +122,22 @@ CREATE TABLE `restaurants` (
   `Website` varchar(255) DEFAULT NULL,
   `CuisineType` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `restaurants`
+--
+
+INSERT INTO `restaurants` (`RestaurantID`, `Description`, `Location`, `AverageRating`, `PopularityScore`, `RestaurantName`, `Address`, `Phone`, `Website`, `CuisineType`) VALUES
+(1, 'ร้านอาหารตามสั่ง อร่อย ราคาถูก', 'บางแสน, ชลบุรี', 4.50, 90, 'เจ๊น้อยอาหารตามสั่ง', '123/4 ถนนเลียบชายหาด, บางแสน', '081-234-5678', NULL, 'Thai'),
+(2, 'ข้าวแกงรสเด็ด เมนูหลากหลาย', 'บางแสน, ชลบุรี', 4.60, 88, 'ข้าวแกงป้าแดง', '567/8 ถนนสุขุมวิท, บางแสน', '082-345-6789', NULL, 'Thai'),
+(3, 'ก๋วยเตี๋ยวเรือ น้ำซุปเข้มข้น', 'บางแสน, ชลบุรี', 4.40, 87, 'ก๋วยเตี๋ยวเรือบางแสน', '234/5 ถนนบางแสนสาย 2', '089-456-7890', NULL, 'Noodles'),
+(4, 'ข้าวมันไก่ สูตรเด็ด น้ำจิ้มสุดแซ่บ', 'บางแสน, ชลบุรี', 4.50, 85, 'ข้าวมันไก่เฮียตี๋', '678/9 ซอย 10 ถนนบางแสน', '090-567-8901', NULL, 'Thai'),
+(5, 'ราดหน้า ผัดซีอิ๊ว เส้นเหนียวนุ่ม', 'บางแสน, ชลบุรี', 4.30, 83, 'ราดหน้าเจ๊หมวย', '345/6 ถนนสุขุมวิท', '091-678-9012', NULL, 'Thai'),
+(6, 'ข้าวต้มเครื่อง เมนูโต้รุ่ง', 'บางแสน, ชลบุรี', 4.40, 82, 'ข้าวต้มรุ่งโรจน์', '123/6 ถนนบางแสน-อ่างศิลา', '092-789-0123', NULL, 'Thai'),
+(7, 'ข้าวไข่เจียว เมนูง่ายๆ อร่อย', 'บางแสน, ชลบุรี', 4.20, 80, 'ไข่เจียวบางแสน', '456/7 ถนนสุขุมวิท', '093-890-1234', NULL, 'Thai'),
+(8, 'โจ๊กหมูร้อนๆ พร้อมไข่ลวก', 'บางแสน, ชลบุรี', 4.50, 86, 'โจ๊กหมูอาม่า', '789/8 ซอย 3 ถนนสุขุมวิท', '094-901-2345', NULL, 'Thai'),
+(9, 'ส้มตำ-ไก่ย่าง รสแซ่บ', 'บางแสน, ชลบุรี', 4.70, 89, 'ตำแซ่บบางแสน', '567/8 ถนนบางแสน-อ่างศิลา', '095-012-3456', NULL, 'Thai'),
+(10, 'ข้าวหมูแดง-หมูกรอบ สูตรโบราณ', 'บางแสน, ชลบุรี', 4.60, 88, 'ข้าวหมูแดงบางแสน', '789/9 ถนนบางแสนสาย 2', '096-123-4567', NULL, 'Thai');
 
 -- --------------------------------------------------------
 
@@ -99,7 +171,7 @@ CREATE TABLE `roommembers` (
 --
 
 INSERT INTO `roommembers` (`RoomID`, `UserID`, `JoinedAt`) VALUES
-(25, 21, '2025-02-19 10:12:58');
+(105, 13, '2025-02-22 12:00:56');
 
 -- --------------------------------------------------------
 
@@ -113,19 +185,17 @@ CREATE TABLE `rooms` (
   `CreatedAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `RoomCode` varchar(20) NOT NULL,
   `room_name` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL
+  `description` text DEFAULT NULL,
+  `guestName` varchar(255) DEFAULT NULL,
+  `guestAvatar` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms`
 --
 
-INSERT INTO `rooms` (`RoomID`, `CreatedBy`, `CreatedAt`, `RoomCode`, `room_name`, `description`) VALUES
-(25, 13, '2025-02-19 10:11:39', 'AGC6QP', 'q12', NULL),
-(26, 21, '2025-02-19 10:13:29', 'ZB617F', 'q12', NULL),
-(27, 21, '2025-02-19 10:19:20', 'PZP3W1', 'q12', NULL),
-(28, 21, '2025-02-19 10:20:40', 'XZ5YXO', 'q12', NULL),
-(29, 21, '2025-02-19 11:42:24', 'OU076M', 'aa', NULL);
+INSERT INTO `rooms` (`RoomID`, `CreatedBy`, `CreatedAt`, `RoomCode`, `room_name`, `description`, `guestName`, `guestAvatar`) VALUES
+(105, 21, '2025-02-22 12:00:51', 'WYBALM', 'sek123', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -139,16 +209,19 @@ CREATE TABLE `users` (
   `DietaryRestrictions` text DEFAULT NULL,
   `Username` varchar(255) NOT NULL,
   `Password` varchar(255) NOT NULL,
-  `Email` varchar(255) NOT NULL
+  `Email` varchar(255) DEFAULT NULL,
+  `Avatar` varchar(255) DEFAULT NULL,
+  `isGuest` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`UserID`, `Preferences`, `DietaryRestrictions`, `Username`, `Password`, `Email`) VALUES
-(13, NULL, NULL, 'Seksant Sukkasem', '1234', 'admin1234@gmail.com'),
-(21, NULL, NULL, 'Seksant', '123', 'admin@go.buu.ac.th');
+INSERT INTO `users` (`UserID`, `Preferences`, `DietaryRestrictions`, `Username`, `Password`, `Email`, `Avatar`, `isGuest`) VALUES
+(13, NULL, NULL, 'Seksant Sukkasem', '1234', 'admin1234@gmail.com', NULL, NULL),
+(21, NULL, NULL, 'Seksant', '123', 'admin@go.buu.ac.th', NULL, NULL),
+(90, NULL, NULL, 'ดั้ง', '', NULL, 'https://i.pravatar.cc/150?img=1', '1');
 
 -- --------------------------------------------------------
 
@@ -237,13 +310,13 @@ ALTER TABLE `votes`
 -- AUTO_INCREMENT for table `menuitems`
 --
 ALTER TABLE `menuitems`
-  MODIFY `ItemID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ItemID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `restaurants`
 --
 ALTER TABLE `restaurants`
-  MODIFY `RestaurantID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `RestaurantID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -255,13 +328,13 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `RoomID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `RoomID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- Constraints for dumped tables
