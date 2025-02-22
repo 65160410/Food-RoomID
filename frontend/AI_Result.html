@@ -1,19 +1,16 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GroupEats AI</title>
     <style>
-      /* ตั้งค่าพื้นฐาน */
       body {
         font-family: Arial, sans-serif;
         background-color: #fef5e7;
         margin: 0;
         padding: 0;
       }
-
-      /* ส่วนหัวของเว็บไซต์ */
       header {
         display: flex;
         justify-content: space-between;
@@ -22,19 +19,23 @@
         background: white;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
-
       .logo {
+        display: flex;
+        align-items: center;
         font-size: 20px;
         font-weight: bold;
         color: #000000;
       }
-
+      .logo img {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+      }
       nav a {
         margin: 0 15px;
         text-decoration: none;
         color: #333;
       }
-
       .btn {
         padding: 10px 15px;
         border: none;
@@ -42,24 +43,19 @@
         font-size: 14px;
         cursor: pointer;
       }
-
       .primary {
         background-color: #ff6b6b;
         color: white;
       }
-
-      /* ส่วนแนะนำร้านอาหาร */
       .recommendations {
         text-align: center;
         margin: 30px;
       }
-
       .restaurant-list {
         display: flex;
         justify-content: center;
         gap: 20px;
       }
-
       .restaurant-card {
         background: white;
         padding: 15px;
@@ -69,12 +65,10 @@
         text-align: center;
         position: relative;
       }
-
       .restaurant-card img {
         width: 100%;
         border-radius: 8px;
       }
-
       .rating {
         position: absolute;
         top: 10px;
@@ -85,11 +79,9 @@
         border-radius: 15px;
         font-size: 14px;
       }
-
       .tags {
         margin: 10px 0;
       }
-
       .tag {
         display: inline-block;
         background: #ffcc80;
@@ -99,24 +91,16 @@
         font-size: 12px;
         margin: 3px;
       }
-
       .actions {
         display: flex;
         justify-content: center;
         gap: 10px;
         margin-top: 10px;
       }
-
       .vote {
         background-color: #ff6b6b;
         color: white;
       }
-
-      .map {
-        background-color: #ffd699;
-      }
-
-      /* ส่วนสถานะการโหวต */
       .voting-status {
         background: white;
         padding: 20px;
@@ -125,23 +109,18 @@
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
-
       .vote-list p {
         display: flex;
         justify-content: space-between;
         font-size: 16px;
       }
-
       .voted {
         color: #ff5733;
         font-weight: bold;
       }
-
       .waiting {
         color: gray;
       }
-
-      /* ส่วนท้ายเว็บไซต์ */
       footer {
         text-align: center;
         padding: 15px;
@@ -149,7 +128,6 @@
         box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
         margin-top: 20px;
       }
-
       footer nav a {
         margin: 0 10px;
         text-decoration: none;
@@ -159,100 +137,100 @@
   </head>
   <body>
     <header>
-      <div class="logo">🍽️ GroupEats AI</div>
+      <div class="logo">
+        <img
+          src="https://media.discordapp.net/attachments/1318835776661880883/1340755022903906355/Screenshot_2025-02-17_013707.png?ex=67bac32b&is=67b971ab&hm=e384a0ebee3de0f9b414268dfc59079adc14b92d4dbd144f52ab919004c8c3d6&=&format=webp&quality=lossless&width=183&height=177"
+          alt="GroupEats AI Logo"
+        />
+        GroupEats AI
+      </div>
       <nav>
         <a href="#">How it works</a>
         <a href="#">About</a>
         <button class="btn primary">Start New Search</button>
       </nav>
     </header>
-
     <section class="recommendations">
       <h2>AI Restaurant Recommendations</h2>
       <p>Based on your group's preferences and dietary requirements</p>
-
-      <div class="restaurant-list">
-        <!-- ร้านอาหารที่ 1 -->
-        <div class="restaurant-card">
-          <img
-            src="https://ylstudio.com/wp-content/uploads/2020/09/yl-studio_sakura_restaurant-design-1.jpg"
-            alt="Sakura Japanese Dining"
-          />
-          <div class="rating">⭐ 4.8</div>
-          <h3>Sakura Japanese Dining</h3>
-          <p>
-            Perfect match for your group's preference for Asian cuisine and
-            dietary restrictions.
-          </p>
-          <div class="tags">
-            <span class="tag">Sushi</span>
-            <span class="tag">Vegetarian</span>
-          </div>
-          <div class="actions">
-            <button class="btn vote">Vote</button>
-            <button class="btn map">📍 Map</button>
-          </div>
+    </section>
+    <div class="restaurant-list">
+      <!-- ร้านอาหารที่ 1 -->
+      <div class="restaurant-card">
+        <img
+          src="https://ylstudio.com/wp-content/uploads/2020/09/yl-studio_sakura_restaurant-design-1.jpg"
+          alt="Sakura Japanese Dining"
+        />
+        <div class="rating">⭐ 4.8</div>
+        <h3>Sakura Japanese Dining</h3>
+        <p>
+          Perfect match for your group's preference for Asian cuisine and
+          dietary restrictions.
+        </p>
+        <div class="tags">
+          <span class="tag">Sushi</span>
+          <span class="tag">Vegetarian</span>
         </div>
-
-        <!-- ร้านอาหารที่ 2 -->
-        <div class="restaurant-card">
-          <img
-            src="https://f.ptcdn.info/587/034/000/1439953535-1-o.jpg"
-            alt="Thai Fusion Kitchen"
-          />
-          <div class="rating">⭐ 4.6</div>
-          <h3>Thai Fusion Kitchen</h3>
-          <p>
-            Combines traditional Thai flavors with modern presentation, suitable
-            for spice lovers.
-          </p>
-          <div class="tags">
-            <span class="tag">Thai</span>
-            <span class="tag">Spicy</span>
-          </div>
-          <div class="actions">
-            <button class="btn vote">Vote</button>
-            <button class="btn map">📍 Map</button>
-          </div>
-        </div>
-
-        <!-- ร้านอาหารที่ 3 -->
-        <div class="restaurant-card">
-          <img
-            src="https://f.ptcdn.info/587/034/000/1439953535-1-o.jpg"
-            alt="Bella Italia"
-          />
-          <div class="rating">⭐ 4.7</div>
-          <h3>Bella Italia</h3>
-          <p>
-            Authentic Italian cuisine with extensive wine selection and
-            vegetarian options.
-          </p>
-          <div class="tags">
-            <span class="tag">Italian</span>
-            <span class="tag">Wine</span>
-          </div>
-          <div class="actions">
-            <button class="btn vote">Vote</button>
-            <button class="btn map">📍 Map</button>
-          </div>
+        <div class="actions">
+          <button class="btn vote">Vote</button>
+          <button class="btn map">📍 Map</button>
         </div>
       </div>
-    </section>
 
+      <!-- ร้านอาหารที่ 2 -->
+      <div class="restaurant-card">
+        <img
+          src="https://f.ptcdn.info/587/034/000/1439953535-1-o.jpg"
+          alt="Thai Fusion Kitchen"
+        />
+        <div class="rating">⭐ 4.6</div>
+        <h3>Thai Fusion Kitchen</h3>
+        <p>
+          Combines traditional Thai flavors with modern presentation, suitable
+          for spice lovers.
+        </p>
+        <div class="tags">
+          <span class="tag">Thai</span>
+          <span class="tag">Spicy</span>
+        </div>
+        <div class="actions">
+          <button class="btn vote">Vote</button>
+          <button class="btn map">📍 Map</button>
+        </div>
+      </div>
+
+      <!-- ร้านอาหารที่ 3 -->
+      <div class="restaurant-card">
+        <img
+          src="https://f.ptcdn.info/587/034/000/1439953535-1-o.jpg"
+          alt="Bella Italia"
+        />
+        <div class="rating">⭐ 4.7</div>
+        <h3>Bella Italia</h3>
+        <p>
+          Authentic Italian cuisine with extensive wine selection and vegetarian
+          options.
+        </p>
+        <div class="tags">
+          <span class="tag">Italian</span>
+          <span class="tag">Wine</span>
+        </div>
+        <div class="actions">
+          <button class="btn vote">Vote</button>
+          <button class="btn map">📍 Map</button>
+        </div>
+      </div>
+    </div>
     <section class="voting-status">
       <h3>Group Voting Status</h3>
       <div class="vote-list">
-        <p>
-          👤 Sarah <span class="voted">Voted for Sakura Japanese Dining</span>
-        </p>
+        <p>👤 Sarah <span class="voted">Voted for Sakura Japanese Dining</span></p>
         <p>👤 Mike <span class="waiting">Waiting for vote...</span></p>
         <p>👤 Emma <span class="voted">Voted for Thai Fusion Kitchen</span></p>
       </div>
     </section>
-
     <footer>
-      <p>© 2025 GroupEats AI</p>
+      <p>&copy; 2025 GroupEats AI</p>
       <nav>
         <a href="#">Privacy Policy</a>
         <a href="#">Terms of Service</a>
