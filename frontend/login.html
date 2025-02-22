@@ -3,45 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>เข้าสู่ระบบ | FoodMeet</title>
+    <title>สมัครสมาชิก | FoodMeet</title>
     <style>
       body {
-        background-color: #fef6ee;
+        background-color: #ffeedc;
         font-family: Arial, sans-serif;
         margin: 0;
+        padding: 0;
+      }
+      .form-container {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
+        width: 100%;
       }
-
       .form-box {
         background: white;
         padding: 30px;
-        border-radius: 12px;
+        border-radius: 10px;
         text-align: center;
-        width: 380px;
+        width: 350px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         position: relative;
       }
-
-      .form-box h2 {
-        margin-bottom: 5px;
+      h2 {
+        margin-bottom: 10px;
         color: #333;
       }
-
-      .form-box p {
+      p {
         font-size: 14px;
         color: gray;
       }
-
-      .social-login {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-bottom: 15px;
-      }
-
       .social-btn {
         flex: 1;
         padding: 10px;
@@ -50,37 +43,31 @@
         cursor: pointer;
         font-size: 14px;
       }
-
       .google {
         background-color: white;
         color: black;
         border: 1px solid #ccc;
       }
-
       .facebook {
         background-color: white;
         color: black;
         border: 1px solid #ccc;
       }
-
       .divider {
         margin: 15px 0;
         font-size: 14px;
         color: gray;
         position: relative;
       }
-
       form {
         display: flex;
         flex-direction: column;
       }
-
       label {
         text-align: left;
         font-size: 14px;
         margin-top: 10px;
       }
-
       input {
         padding: 10px;
         margin: 5px 0;
@@ -88,19 +75,6 @@
         border-radius: 5px;
         font-size: 14px;
       }
-
-      .options {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        margin-top: 10px;
-      }
-
-      .forgot-password {
-        color: #ff6b35;
-        text-decoration: none;
-      }
-
       .main-btn {
         background-color: #ff6b35;
         color: white;
@@ -111,12 +85,10 @@
         cursor: pointer;
         font-size: 16px;
       }
-
       .switch-auth {
         margin-top: 15px;
         font-size: 14px;
       }
-
       .back-btn {
         position: absolute;
         bottom: 15px;
@@ -132,57 +104,71 @@
     </style>
   </head>
   <body>
-    <div class="form-box">
-      <img
-        src="https://media.discordapp.net/attachments/1318835776661880883/1340755022903906355/Screenshot_2025-02-17_013707.png?ex=67bac32b&is=67b971ab&hm=e384a0ebee3de0f9b414268dfc59079adc14b92d4dbd144f52ab919004c8c3d6&=&format=webp&quality=lossless&width=183&height=177"
-        alt="Logo"
-        width="100"
-      />
-
-      <h2>Welcome Back!</h2>
-      <p>Sign in to continue to Restaurant Finder</p>
-
-      <div class="social-login">
-        <button class="social-btn google">G Google</button>
-        <button class="social-btn facebook">f Facebook</button>
-      </div>
-
-      <div class="divider">or</div>
-
-      <form action="index.html" method="POST">
-        <label for="email">Email Address</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="name@example.com"
-          required
+    <div class="form-container">
+      <div class="form-box">
+        <img
+          src="https://media.discordapp.net/attachments/1318835776661880883/1340755022903906355/Screenshot_2025-02-17_013707.png?ex=67bac32b&is=67b971ab&hm=e384a0ebee3de0f9b414268dfc59079adc14b92d4dbd144f52ab919004c8c3d6&=&format=webp&quality=lossless&width=183&height=177"
+          alt="Logo"
+          width="100"
         />
+        <h2>สมัครสมาชิก</h2>
+        <p>สร้างบัญชีของคุณเพื่อใช้งาน FoodMeet</p>
 
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Enter your password"
-          required
-        />
-
-        <div class="options">
-          <label><input type="checkbox" name="remember" /> Remember me</label>
-          <a href="#" class="forgot-password">Forgot Password?</a>
+        <div class="social-login">
+          <button class="social-btn google">G Google</button>
+          <button class="social-btn facebook">f Facebook</button>
         </div>
 
-        <button type="submit" class="main-btn">Login</button>
-      </form>
+        <div class="divider">or</div>
 
-      <p class="switch-auth">
-        Don't have an account? <a href="register.html">Sign Up</a>
-      </p>
+        <form action="index.html" method="POST">
+          <label for="fullname">ชื่อ - นามสกุล</label>
+          <input
+            type="text"
+            id="fullname"
+            name="fullname"
+            placeholder="ชื่อของคุณ"
+            required
+          />
 
-      <button class="back-btn" onclick="window.location.href='Landing.html'">
-        Back
-      </button>
+          <label for="email">อีเมล</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="name@example.com"
+            required
+          />
+
+          <label for="password">รหัสผ่าน</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="ตั้งรหัสผ่านของคุณ"
+            required
+          />
+
+          <label for="confirm-password">ยืนยันรหัสผ่าน</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            placeholder="ยืนยันรหัสผ่านของคุณ"
+            required
+          />
+
+          <button type="submit" class="main-btn">สมัครสมาชิก</button>
+        </form>
+
+        <p class="switch-auth">
+          มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
+        </p>
+
+        <button class="back-btn" onclick="window.location.href='Landing.html'">
+          Back
+        </button>
+      </div>
     </div>
   </body>
 </html>
