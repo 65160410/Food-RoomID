@@ -4,8 +4,16 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// กำหนด CORS header เพียงครั้งเดียว
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=utf-8");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+// ถ้าเป็น OPTIONS request (preflight) ให้หยุดการทำงาน
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
 
 // รับค่า q จาก query string หรือ JSON payload
 $q = "";
@@ -20,19 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 include '../config/db.php';
 
 try {
-    // ถ้าผู้ใช้ไม่ได้พิมพ์อะไรเลย อาจให้ดึงข้อมูลทั้งหมด หรือเช็คเงื่อนไข
     if ($q === "") {
-        $sql = "SELECT * FROM menuitems LIMIT 20"; // สมมติให้ดึง 20 รายการ
+        $sql = "SELECT * FROM menuitems LIMIT 20";
         $stmt = $pdo->query($sql);
     } else {
-        // ค้นหาแบบ LIKE
         $sql = "SELECT * FROM menuitems WHERE ItemName LIKE :search LIMIT 20";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':search' => "%$q%"]);
     }
-
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     echo json_encode([
         'status' => 'success',
         'data' => $results
