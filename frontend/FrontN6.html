@@ -235,6 +235,30 @@
         .action-buttons button:hover {
             opacity: 0.9;
         }
+         /* ค้นหา */
+         .search-bar {
+            display: flex;
+            align-items: center;
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 15px auto;
+            width: 80%;
+        }
+
+        .search-bar i {
+            color: gray;
+            margin-right: 8px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
 
     </style>
 </head>
@@ -257,6 +281,10 @@
             <div class="food-card">
                 <div class="food-header">
                     <h2>Current Selection <span class="counter"></span></h2>
+                </div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
                 </div>
                 <img src="https://cdn.discordapp.com/attachments/1340746744165564477/1340762871658713160/image.png?ex=67b38a3a&is=67b238ba&hm=f73b07ac70df8ef1511c65452277271041bcee9a548cd4cde4f33774590bfaf9&" alt="ข้าวกะเพรา">
                 <div class="food-info">
