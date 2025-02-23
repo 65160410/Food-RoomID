@@ -143,9 +143,10 @@
       /* กำหนดความสูงขั้นต่ำให้เท่ากัน */
     }
 
+
     .food-card img {
       width: 100%;
-      height: 150px;
+      height: 250px;
       /* กำหนดความสูงรูปให้เท่ากัน */
       object-fit: cover;
       border-radius: 8px;
@@ -312,23 +313,29 @@
       background-color: #dc3545;
       color: #fff;
     }
-    .food-card {
-  position: relative; /* ทำให้สามารถใช้ absolute positioning ภายใน card ได้ */
-  /* ส่วนอื่นๆ เช่น width, background, box-shadow, padding ฯลฯ */
-}
 
-.delete-menu {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #dc3545;
-}
-.delete-menu:hover {
-  color: #a71d2a;
+    .food-card {
+      position: relative;
+      /* ทำให้สามารถใช้ absolute positioning ภายใน card ได้ */
+      /* ส่วนอื่นๆ เช่น width, background, box-shadow, padding ฯลฯ */
+    }
+
+    .delete-menu {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #dc3545;
+    }
+
+    .delete-menu:hover {
+      color: #a71d2a;
+    }
+    .food-info {
+  text-align: left;
 }
 
   </style>
@@ -367,53 +374,54 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="action-buttons">
+      <div class="action-buttons action-card">
         <button class="view-results"><i class="fas fa-chart-bar"></i> View AI Results</button>
-        <button class="vote-restaurant"><i class="fas fa-utensils"></i> Vote for Restaurant</button>
       </div>
+
     </div>
   </div>
   </div>
 
   <script>
-      // เพิ่ม Event Listener ให้ปุ่ม Delete
-  document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("delete-menu") || e.target.closest(".delete-menu")) {
-      const button = e.target.closest(".delete-menu");
-      const card = button.closest(".food-card");
-      const menuId = card.getAttribute("data-menu-id");
 
-      if (!menuId) {
-        alert("ไม่พบข้อมูลเมนูที่จะลบ (missing data-menu-id).");
-        return;
-      }
+    // เพิ่ม Event Listener ให้ปุ่ม Delete
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("delete-menu") || e.target.closest(".delete-menu")) {
+        const button = e.target.closest(".delete-menu");
+        const card = button.closest(".food-card");
+        const menuId = card.getAttribute("data-menu-id");
 
-      if (!confirm("ต้องการลบเมนูนี้ใช่หรือไม่?")) {
-        return;
-      }
-
-      // เรียก API deleteMenu.php
-      fetch(`${API_BASE_URL}/deleteMenu.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: parseInt(menuId) })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          // ลบ card ออกจากหน้า
-          card.remove();
-          alert("เมนูถูกลบเรียบร้อยแล้ว!");
-        } else {
-          alert("เกิดข้อผิดพลาดในการลบเมนู: " + data.message);
+        if (!menuId) {
+          alert("ไม่พบข้อมูลเมนูที่จะลบ (missing data-menu-id).");
+          return;
         }
-      })
-      .catch(err => {
-        console.error("Error deleting menu:", err);
-        alert("เกิดข้อผิดพลาดในการลบเมนู (ดู console)");
-      });
-    }
-  });
+
+        if (!confirm("ต้องการลบเมนูนี้ใช่หรือไม่?")) {
+          return;
+        }
+
+        // เรียก API deleteMenu.php
+        fetch(`${API_BASE_URL}/deleteMenu.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: parseInt(menuId) })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === "success") {
+              // ลบ card ออกจากหน้า
+              card.remove();
+              alert("เมนูถูกลบเรียบร้อยแล้ว!");
+            } else {
+              alert("เกิดข้อผิดพลาดในการลบเมนู: " + data.message);
+            }
+          })
+          .catch(err => {
+            console.error("Error deleting menu:", err);
+            alert("เกิดข้อผิดพลาดในการลบเมนู (ดู console)");
+          });
+      }
+    });
     document.addEventListener("DOMContentLoaded", function () {
       /**********************************
        * ส่วนที่ 1: จัดการการค้นหา & Dropdown
@@ -529,14 +537,11 @@
     card.innerHTML = `
       <!-- ปุ่มลบ (X) ที่ด้านบนขวาของ card -->
       <button class="delete-menu"><i class="fa-solid fa-xmark"></i></button>
+      <!-- แสดงภาพใน card -->
       <img id="card${i}-img" src="../image/meneDefult.png" alt="Placeholder ${i}">
-      <div class="food-info">
+      <div class="food-info" style="text-align: left;">
         <h3 id="card${i}-title">Card ${i}</h3>
         <p id="card${i}-desc">เลือกเมนูอาหาร</p>
-      </div>
-      <div class="buttons">
-        <button class="like"><i class="fa-solid fa-check"></i> Like</button>
-        <button class="dislike"><i class="fa-solid fa-xmark"></i> Dislike</button>
       </div>
     `;
     selectedCardsContainer.appendChild(card);
@@ -547,45 +552,106 @@
   attachDeleteMenuListeners();
 }
 
-// ฟังก์ชันสำหรับติดตั้ง event listener ให้ปุ่ม Delete (X)
-function attachDeleteMenuListeners() {
-  const deleteButtons = document.querySelectorAll('.delete-menu');
-  deleteButtons.forEach(button => {
-    button.addEventListener("click", function(e) {
-      // หยุดการแพร่ของ event ถ้าจำเป็น
-      e.stopPropagation();
-      const card = button.closest('.food-card');
-      // ดึงค่า record id จาก data attribute (ต้องถูกเก็บไว้ตอนบันทึกเมนู)
-      const menuId = card.getAttribute('data-menu-id');
-      if (!menuId) {
-        alert("ไม่มีข้อมูลเมนูที่จะลบ");
-        return;
-      }
-      if (!confirm("คุณต้องการลบเมนูนี้ใช่หรือไม่?")) {
-        return;
-      }
-      // ส่ง request ไปยัง API deleteMenu.php เพื่อลบข้อมูลในฐานข้อมูล
-      fetch(`${API_BASE_URL}/deleteMenu.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: parseInt(menuId) })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === "success") {
-          card.remove();
-          alert("เมนูถูกลบเรียบร้อยแล้ว");
-        } else {
-          alert("เกิดข้อผิดพลาดในการลบเมนู: " + data.message);
-        }
-      })
-      .catch(err => {
-        console.error("Error deleting menu:", err);
-        alert("เกิดข้อผิดพลาดในการลบเมนู");
-      });
-    });
+
+
+document.querySelector(".view-results").addEventListener("click", function () {
+  let selectedMenus = [];
+  const cards = document.querySelectorAll("#selectedCards .food-card");
+
+  // วน loop เพื่อดึงชื่อเมนูจากแต่ละ card
+  cards.forEach(card => {
+    let title = card.querySelector("h3").textContent.trim();
+
+    // หาก card ยังไม่ได้ถูกอัปเดต (เช่นเป็นค่า default)
+    if (title.startsWith("Card") || title === "เลือกเมนูอาหาร") {
+      title = "";
+    }
+
+    // เก็บแค่ชื่อเมนูเท่านั้น
+    selectedMenus.push(title);
   });
-}
+
+  // เติมข้อมูล default ให้ครบ 4 รายการหากไม่ครบ
+  const MAX_CARDS = 4;
+  while (selectedMenus.length < MAX_CARDS) {
+    selectedMenus.push("");
+  }
+
+  // สร้าง object payload โดยส่งเฉพาะ roomID และ array ของชื่อเมนู
+  const dataToSend = {
+    roomID: roomID,  // roomID ควรถูกกำหนดหรือดึงจาก query string ก่อนหน้าแล้ว
+    menus: selectedMenus
+  };
+
+  // ทดสอบดู payload ด้วย console.log
+  console.log("Data to send:", dataToSend);
+  // alert(JSON.stringify(dataToSend, null, 2));
+
+  // เมื่อทดสอบแล้ว uncomment ส่วน fetch ด้านล่างเพื่อต่อการส่งข้อมูลจริง
+  /*
+  fetch("https://angsila.informatics.buu.ac.th/~65160143/AJTae/calculate.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(dataToSend)
+  })
+    .then(response => response.json())
+    .then(result => {
+      console.log("AI Results:", result);
+      // นำผลลัพธ์มาแสดงใน UI ตามที่ต้องการ
+    })
+    .catch(error => {
+      console.error("Error sending data to AI API:", error);
+    });
+  */
+});
+
+
+
+
+
+
+
+      // ฟังก์ชันสำหรับติดตั้ง event listener ให้ปุ่ม Delete (X)
+      function attachDeleteMenuListeners() {
+        const deleteButtons = document.querySelectorAll('.delete-menu');
+        deleteButtons.forEach(button => {
+          button.addEventListener("click", function (e) {
+            // หยุดการแพร่ของ event ถ้าจำเป็น
+            e.stopPropagation();
+            const card = button.closest('.food-card');
+            // ดึงค่า record id จาก data attribute (ต้องถูกเก็บไว้ตอนบันทึกเมนู)
+            const menuId = card.getAttribute('data-menu-id');
+            if (!menuId) {
+              alert("ไม่มีข้อมูลเมนูที่จะลบ");
+              return;
+            }
+            if (!confirm("คุณต้องการลบเมนูนี้ใช่หรือไม่?")) {
+              return;
+            }
+            // ส่ง request ไปยัง API deleteMenu.php เพื่อลบข้อมูลในฐานข้อมูล
+            fetch(`${API_BASE_URL}/deleteMenu.php`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: parseInt(menuId) })
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.status === "success") {
+                  card.remove();
+                  alert("เมนูถูกลบเรียบร้อยแล้ว");
+                } else {
+                  alert("เกิดข้อผิดพลาดในการลบเมนู: " + data.message);
+                }
+              })
+              .catch(err => {
+                console.error("Error deleting menu:", err);
+                alert("เกิดข้อผิดพลาดในการลบเมนู");
+              });
+          });
+        });
+      }
 
       initializeCards();
 
@@ -752,26 +818,7 @@ function attachDeleteMenuListeners() {
           .catch(error => console.error("Error sending vote for food:", error));
       };
 
-      const dislikeBtn = document.querySelector(".dislike");
-      const neutralBtn = document.querySelector(".neutral");
-      const likeBtn = document.querySelector(".like");
 
-      if (dislikeBtn) dislikeBtn.addEventListener("click", () => voteFood("dislike"));
-      if (neutralBtn) neutralBtn.addEventListener("click", () => voteFood("neutral"));
-      if (likeBtn) likeBtn.addEventListener("click", () => voteFood("like"));
-
-      const viewResultsBtn = document.querySelector(".view-results");
-      const voteRestaurantBtn = document.querySelector(".vote-restaurant");
-      if (viewResultsBtn) {
-        viewResultsBtn.addEventListener("click", () => {
-          window.location.href = "aiResults.html?roomID=" + encodeURIComponent(roomID);
-        });
-      }
-      if (voteRestaurantBtn) {
-        voteRestaurantBtn.addEventListener("click", () => {
-          window.location.href = "voteRestaurant.html?roomID=" + encodeURIComponent(roomID);
-        });
-      }
 
       const leaveRoomBtn = document.getElementById("leaveRoomBtn");
       if (leaveRoomBtn) {
