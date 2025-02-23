@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Food Group</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ไอคอน Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffeedc;
+      /* สีพื้นหลัง */
+      color: #333;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff;
+      padding: 10px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #ff5722;
+      font-weight: bold;
+    }
+
+    .leave-room {
+      background: none;
+      border: none;
+      color: #6c757d;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .leave-room:hover {
+      color: #343a40;
+    }
+
+    /* Container (Sidebar + Main) */
+    .container {
+      display: flex;
+      width: 100%;
+      margin-top: 0;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background-color: #fff;
+      padding: 20px;
+      border-right: 1px solid #eee;
+    }
+
+    .sidebar h3 {
+      margin-top: 0;
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: default;
+    }
+
+    .sidebar ul li img {
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      margin-right: 10px;
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    /* Search bar */
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 250px;
+      padding: 8px 35px 8px 15px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .search-bar .fa-magnifying-glass {
+      position: absolute;
+      right: 10px;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    /* Cards layout: 2 columns, 2 rows */
+    .cards-wrapper {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 20px;
+    }
+
+    /* Card */
+    .food-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      padding: 15px;
+      text-align: center;
+      /* ใช้ flex เพื่อจัดเรียงเนื้อหาให้เท่ากัน */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 350px;
+      /* กำหนดความสูงขั้นต่ำให้เท่ากัน */
+    }
+
+
+    .food-card img {
+      width: 100%;
+      height: 250px;
+      /* กำหนดความสูงรูปให้เท่ากัน */
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .food-card h3 {
+      font-size: 16px;
+      color: #333;
+      margin: 0;
+      margin-bottom: 5px;
+    }
+
+    .food-card p {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+      margin-bottom: 15px;
+    }
+
+
+    .like {
+      border-color: #28a745;
+      color: #28a745;
+    }
+
+    .like:hover {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .dislike {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+
+    .dislike:hover {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    /* Action buttons ด้านล่าง */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .action-buttons button {
+      border: none;
+      padding: 12px 30px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+      color: #fff;
+      background-color: #ff6b35;
+    }
+
+    .action-buttons button:hover {
+      opacity: 0.9;
+    }
+
+    /* Responsive: ถ้าจอแคบ ให้ Sidebar ขึ้นข้างบน Main */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+      }
+
+      .main-content {
+        width: 100%;
+      }
+
+      .cards-wrapper {
+        grid-template-columns: 1fr;
+        /* เหลือคอลัมน์เดียวบนจอเล็ก */
+      }
+    }
+
+    .dropdown-card {
+      position: absolute;
+      background: #fff;
+      border: 1px solid #ccc;
+      width: 100%;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .dropdown-item-img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .dropdown-item-name {
+      font-size: 14px;
+      color: #333;
+    }
+
+    /* ส่วนปุ่ม */
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* ปุ่ม Like/Dislike */
+    .buttons button {
+      border: none;
+      border-radius: 25px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ปุ่ม Like */
+    .like {
+      background-color: #e6fff5;
+      color: #28a745;
+      border: 1px solid #28a745;
+    }
+
+    .like:hover {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    /* ปุ่ม Dislike */
+    .dislike {
+      background-color: #ffe6e6;
+      color: #dc3545;
+      border: 1px solid #dc3545;
+    }
+
+    .dislike:hover {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .food-card {
+      position: relative;
+      /* ทำให้สามารถใช้ absolute positioning ภายใน card ได้ */
+      /* ส่วนอื่นๆ เช่น width, background, box-shadow, padding ฯลฯ */
+    }
+
+    .delete-menu {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #dc3545;
+    }
+
+    .delete-menu:hover {
+      color: #a71d2a;
+    }
+
+    .food-info {
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h2 id="roomTitle">Food Group #</h2>
+    <button class="leave-room" id="leaveRoomBtn">
+      <i class="fas fa-door-open"></i> Leave Room
+    </button>
+  </div>
+
+  <!-- Container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h3 id="memberCount">Members (0)</h3>
+      <ul id="memberList"></ul>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Search bar -->
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="ค้นหาอาหารที่คุณชื่นชอบ">
+        <i class="fas fa-magnifying-glass"></i>
+      </div>
+      <!-- Dropdown สำหรับผลลัพธ์การค้นหา -->
+      <div id="dropdownWrapper"></div>
+
+      <!-- Cards Wrapper สำหรับแสดง card ที่เลือกไว้ 4 ใบ -->
+      <div class="cards-wrapper" id="selectedCards">
+        <!-- Card placeholder จะถูกสร้างโดย JavaScript -->
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons action-card">
+        <button class="view-results"><i class="fas fa-chart-bar"></i> View AI Results</button>
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+  <script>
+
+    // เพิ่ม Event Listener ให้ปุ่ม Delete
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("delete-menu") || e.target.closest(".delete-menu")) {
+        const button = e.target.closest(".delete-menu");
+        const card = button.closest(".food-card");
+        const menuId = card.getAttribute("data-menu-id");
+
+        if (!menuId) {
+          alert("ไม่พบข้อมูลเมนูที่จะลบ (missing data-menu-id).");
+          return;
+        }
+
+        if (!confirm("ต้องการลบเมนูนี้ใช่หรือไม่?")) {
+          return;
+        }
+
+        // เรียก API deleteMenu.php
+        fetch(`${API_BASE_URL}/deleteMenu.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: parseInt(menuId) })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === "success") {
+              // ลบ card ออกจากหน้า
+              card.remove();
+              alert("เมนูถูกลบเรียบร้อยแล้ว!");
+            } else {
+              alert("เกิดข้อผิดพลาดในการลบเมนู: " + data.message);
+            }
+          })
+          .catch(err => {
+            console.error("Error deleting menu:", err);
+            alert("เกิดข้อผิดพลาดในการลบเมนู (ดู console)");
+          });
+      }
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+      /**********************************
+       * ส่วนที่ 1: จัดการการค้นหา & Dropdown
+       **********************************/
+      const searchInput = document.getElementById("searchInput");
+      const dropdownWrapper = document.getElementById("dropdownWrapper");
+
+      // เมื่อผู้ใช้พิมพ์ในช่องค้นหา
+      searchInput.addEventListener("input", function () {
+        const query = searchInput.value.trim().toLowerCase();
+        if (query.length > 0) {
+          searchMenuItems(query);
+        } else {
+          dropdownWrapper.innerHTML = "";
+        }
+      });
+
+      // ฟังก์ชันเรียก API ค้นหาเมนูอาหาร
+      async function searchMenuItems(query) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/searchMenuItems.php?q=${encodeURIComponent(query)}`);
+          const result = await response.json();
+          console.log("Search result:", result);
+          if (result.status === "success") {
+            displayMenuDropdown(result.data);
+          } else {
+            dropdownWrapper.innerHTML = "<p>ไม่พบข้อมูล</p>";
+          }
+        } catch (error) {
+          console.error("Error searching menu items:", error);
+          dropdownWrapper.innerHTML = "<p>เกิดข้อผิดพลาดในการค้นหา</p>";
+        }
+      }
+
+      // ฟังก์ชันแสดงผลลัพธ์เป็น dropdown
+      function displayMenuDropdown(items) {
+        if (!items || items.length === 0) {
+          dropdownWrapper.innerHTML = "<p>ไม่พบเมนูอาหารที่ค้นหา</p>";
+          return;
+        }
+        const dropdownContainer = document.createElement("div");
+        dropdownContainer.classList.add("dropdown-card");
+
+        items.forEach(item => {
+          const card = document.createElement("div");
+          card.classList.add("dropdown-item");
+
+          // แปลง Base64 image (ถ้ามี) ให้แสดงด้วย Data URI Scheme
+          const base64Data = item.ImageURL ? item.ImageURL : "";
+          const imgSrc = base64Data ? `data:image/png;base64,${base64Data}` : "../image/cat.png";
+
+          card.innerHTML = `
+            <img src="${imgSrc}" alt="${item.ItemName}" class="dropdown-item-img">
+            <span class="dropdown-item-name">${item.ItemName}</span>
+          `;
+
+          // เมื่อผู้ใช้คลิกเลือกเมนูใน dropdown
+          // เมื่อผู้ใช้คลิกเลือกเมนูใน dropdown
+          card.addEventListener("click", function () {
+            const menuData = {
+              roomID: roomID,  // ระบุหมายเลขห้อง
+              memberID: localStorage.getItem("userID") || localStorage.getItem("guestUserID"),  // ใช้ userID ถ้ามี ถ้าไม่มี guestUserID
+              ItemName: item.ItemName,
+              description: item.description,
+              ImageURL: item.ImageURL
+            };
+
+            // ส่งข้อมูลไปยัง API เพื่อบันทึกการเลือกเมนู
+            fetch(`${API_BASE_URL}/selectMenu.php`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(menuData)
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.status === "success") {
+                  console.log("Menu selection saved.");
+                } else {
+                  console.error("Error saving menu selection:", data.message);
+                }
+              })
+              .catch(error => console.error("Error saving menu selection:", error));
+
+            // อัปเดต UI ของ client เอง (แสดงใน card ถัดไป)
+            fillNextCard(menuData);
+            dropdownWrapper.innerHTML = "";
+            searchInput.value = item.ItemName;
+          });
+
+
+          dropdownContainer.appendChild(card);
+        });
+
+        dropdownWrapper.innerHTML = "";
+        dropdownWrapper.appendChild(dropdownContainer);
+      }
+
+      /**********************************
+       * ส่วนที่ 2: เตรียม 4 Card สำหรับแสดงผลการเลือก
+       **********************************/
+      const selectedCardsContainer = document.getElementById("selectedCards");
+      const MAX_CARDS = 4;
+      let currentCardIndex = 1; // เริ่มที่ card ใบแรก
+
+      // สร้าง placeholder สำหรับ 4 card เมื่อโหลดหน้า
+      function initializeCards() {
+        selectedCardsContainer.innerHTML = "";
+        for (let i = 1; i <= MAX_CARDS; i++) {
+          const card = document.createElement("div");
+          card.classList.add("food-card");
+          card.id = `card${i}`;
+          // ถ้ามี record update แล้ว ให้เก็บ id ของ selected_menus ลงใน attribute data-menu-id
+          // ตัวอย่าง: card.setAttribute('data-menu-id', '');
+
+          card.innerHTML = `
+      <!-- ปุ่มลบ (X) ที่ด้านบนขวาของ card -->
+      <button class="delete-menu"><i class="fa-solid fa-xmark"></i></button>
+      <!-- แสดงภาพใน card -->
+      <img id="card${i}-img" src="../image/meneDefult.png" alt="Placeholder ${i}">
+      <div class="food-info" style="text-align: left;">
+        <h3 id="card${i}-title">Card ${i}</h3>
+        <p id="card${i}-desc">เลือกเมนูอาหาร</p>
+      </div>
+    `;
+          selectedCardsContainer.appendChild(card);
+        }
+        // ติดตั้ง event listener สำหรับปุ่ม Change (ถ้ามี)
+        attachChangeMenuListeners();
+        // ติดตั้ง event listener สำหรับปุ่ม Delete
+        attachDeleteMenuListeners();
+      }
+
+
+
+      document.querySelector(".view-results").addEventListener("click", function () {
+        let selectedMenus = [];
+        const cards = document.querySelectorAll("#selectedCards .food-card");
+
+        // วน loop เพื่อดึงชื่อเมนูจากแต่ละ card
+        cards.forEach(card => {
+          let title = card.querySelector("h3").textContent.trim();
+
+          // หาก card ยังไม่ได้ถูกอัปเดต (เช่นเป็นค่า default)
+          if (title.startsWith("Card") || title === "เลือกเมนูอาหาร") {
+            title = "";
+          }
+
+          // เก็บแค่ชื่อเมนูเท่านั้น
+          selectedMenus.push(title);
+        });
+
+        // เติมข้อมูล default ให้ครบ 4 รายการหากไม่ครบ
+        const MAX_CARDS = 4;
+        while (selectedMenus.length < MAX_CARDS) {
+          selectedMenus.push("");
+        }
+
+        // สร้าง object payload โดยส่งเฉพาะ roomID และ array ของชื่อเมนู
+        const dataToSend = {
+          roomID: roomID,  // roomID ควรถูกกำหนดหรือดึงจาก query string ก่อนหน้าแล้ว
+          menus: selectedMenus
+        };
+
+        // ทดสอบดู payload ด้วย console.log
+        console.log("Data to send:", dataToSend);
+        // alert(JSON.stringify(dataToSend, null, 2));
+
+        // เมื่อทดสอบแล้ว uncomment ส่วน fetch ด้านล่างเพื่อต่อการส่งข้อมูลจริง
+        /*
+        fetch("https://angsila.informatics.buu.ac.th/~65160143/AJTae/calculate.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(dataToSend)
+        })
+          .then(response => response.json())
+          .then(result => {
+            console.log("AI Results:", result);
+            // นำผลลัพธ์มาแสดงใน UI ตามที่ต้องการ
+          })
+          .catch(error => {
+            console.error("Error sending data to AI API:", error);
+          });
+        */
+      });
+
+
+
+
+
+
+
+      // ฟังก์ชันสำหรับติดตั้ง event listener ให้ปุ่ม Delete (X)
+      function attachDeleteMenuListeners() {
+        const deleteButtons = document.querySelectorAll('.delete-menu');
+        deleteButtons.forEach(button => {
+          button.addEventListener("click", function (e) {
+            // ป้องกัน event propagation
+            e.stopPropagation();
+
+            // หา card ที่ปุ่มนี้อยู่ในนั้น
+            const card = button.closest('.food-card');
+            // ดึงค่า record id จาก data attribute (ควรถูกเซ็ตไว้ตอนบันทึกเมนู)
+            const menuId = card.getAttribute('data-menu-id');
+
+            if (!menuId) {
+              alert("ไม่มีข้อมูลเมนูที่จะลบ");
+              return;
+            }
+
+            if (!confirm("คุณต้องการลบเมนูนี้ใช่หรือไม่?")) {
+              return;
+            }
+
+            // ส่ง request ไปยัง API deleteMenu.php เพื่อทำการลบข้อมูล
+            fetch(`${API_BASE_URL}/deleteMenu.php`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: parseInt(menuId) })
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.status === "success") {
+                  // ลบ card ออกจาก DOM เมื่อการลบสำเร็จ
+                  card.remove();
+                  alert("เมนูถูกลบเรียบร้อยแล้ว");
+                } else {
+                  alert("เกิดข้อผิดพลาดในการลบเมนู: " + data.message);
+                }
+              })
+              .catch(err => {
+                console.error("Error deleting menu:", err);
+                alert("เกิดข้อผิดพลาดในการลบเมนู");
+              });
+          });
+        });
+      }
+
+
+      initializeCards();
+
+      // ฟังก์ชันเติมข้อมูลลงใน Card ใบถัดไป
+      function fillNextCard(menuItem) {
+        if (currentCardIndex > MAX_CARDS) {
+          alert("คุณได้เลือกครบ 4 เมนูแล้ว!");
+          return;
+        }
+        const cardImg = document.getElementById(`card${currentCardIndex}-img`);
+        const cardTitle = document.getElementById(`card${currentCardIndex}-title`);
+        const cardDesc = document.getElementById(`card${currentCardIndex}-desc`);
+
+        const base64Data = menuItem.ImageURL ? menuItem.ImageURL : "";
+        const imgSrc = base64Data ? `data:image/png;base64,${base64Data}` : "../image/cat.png";
+
+        cardImg.src = imgSrc;
+        cardImg.alt = menuItem.ItemName;
+        cardTitle.textContent = menuItem.ItemName;
+        cardDesc.textContent = menuItem.description ? menuItem.description : "";
+
+        // เก็บ id ของ record (ถ้ามี) ลงใน attribute data-menu-id ของ card นี้
+        if (menuItem.id) {
+          document.getElementById(`card${currentCardIndex}`).setAttribute('data-menu-id', menuItem.id);
+        }
+
+        currentCardIndex++;
+      }
+
+      // ฟังก์ชันสำหรับติดตั้ง event listener ให้ปุ่ม Change
+      function attachChangeMenuListeners() {
+        const changeButtons = document.querySelectorAll(".change-menu");
+        changeButtons.forEach(button => {
+          button.addEventListener("click", function (event) {
+            // หาตัว card ที่ปุ่มนี้อยู่ในนั้น
+            const card = event.target.closest(".food-card");
+            // ดึงค่า record id จาก data attribute (ต้องมีการบันทึกไว้ตอน insert/update)
+            const menuRecordId = card.getAttribute('data-menu-id');
+            if (!menuRecordId) {
+              alert("ไม่สามารถเปลี่ยนแปลงเมนูนี้ได้ เนื่องจากไม่มีข้อมูล record ที่บันทึกไว้");
+              return;
+            }
+            // ดึงข้อมูลปัจจุบันใน card เพื่อให้เป็นค่าเริ่มต้นใน prompt
+            const currentName = card.querySelector("h3").textContent;
+            const currentDesc = card.querySelector("p").textContent;
+            // เปิด prompt ให้ผู้ใช้ป้อนชื่อเมนูใหม่และคำอธิบายใหม่
+            const newName = prompt("Enter new menu name:", currentName);
+            if (newName === null || newName.trim() === "") {
+              return; // ยกเลิกหากไม่ป้อนค่า
+            }
+            const newDesc = prompt("Enter new menu description:", currentDesc);
+
+            // ส่งข้อมูลไปยัง API เพื่อ update เมนู (updateMenu.php)
+            fetch(`${API_BASE_URL}/updateMenu.php`, {
+              method: "POST",  // หรือ PUT ตามที่ server รองรับ
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id: menuRecordId,  // รหัส record ใน selected_menus
+                ItemName: newName,
+                description: newDesc,
+                // สามารถส่ง ImageURL ได้ด้วย หากมีการแก้ไขภาพ
+              })
+            })
+              .then(response => response.json())
+              .then(result => {
+                if (result.status === "success") {
+                  // อัปเดต UI ใน card ให้แสดงข้อมูลใหม่
+                  card.querySelector("h3").textContent = newName;
+                  card.querySelector("p").textContent = newDesc;
+                  alert("Menu updated successfully.");
+                } else {
+                  alert("Failed to update menu: " + result.message);
+                }
+              })
+              .catch(error => {
+                console.error("Error updating menu:", error);
+                alert("An error occurred while updating menu.");
+              });
+          });
+        });
+      }
+
+      /**********************************
+       * ส่วนที่ 3: ใช้ Polling เพื่ออัปเดตเมนูที่สมาชิกเลือก (Cross-device)
+       **********************************/
+      // ฟังก์ชัน polling เพื่อดึงข้อมูลการเลือกเมนูล่าสุดจากฐานข้อมูล
+      function updateSelectedMenus() {
+        fetch(`${API_BASE_URL}/getSelectedMenus.php?roomID=${encodeURIComponent(roomID)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === "success") {
+              // สมมติว่า data.selectedMenus เป็น array ของเมนูที่เลือกไว้ในห้อง
+              // รีเซ็ต currentCardIndex และสร้าง placeholder ใหม่
+              currentCardIndex = 1;
+              initializeCards();
+              data.selectedMenus.forEach(menuItem => {
+                // เติมข้อมูลลงใน card ทีละใบ
+                fillNextCard(menuItem);
+              });
+            } else {
+              console.error("Error fetching selected menus:", data.message);
+            }
+          })
+          .catch(error => console.error("Error fetching selected menus:", error));
+      }
+
+      // เรียก polling ทุก ๆ 5 วินาที
+      setInterval(updateSelectedMenus, 5000);
+
+      /**********************************
+       * ส่วนที่ 4: จัดการข้อมูลห้อง (Room Members, Leave Room, Vote, ฯลฯ)
+       **********************************/
+      const params = new URLSearchParams(window.location.search);
+      const roomID = params.get("roomID");
+      const host = params.get("host");
+
+      if (!roomID) {
+        console.error("roomID parameter is missing in the URL");
+        return;
+      }
+      console.log("Room ID:", roomID);
+
+      // ดึงข้อมูลสมาชิกและ room_name จาก API
+      fetch(`${API_BASE_URL}/roomMembers.php?roomID=` + encodeURIComponent(roomID))
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === "success") {
+            document.getElementById("roomTitle").textContent = "Food Group #" + data.room_name;
+            const members = data.members;
+            const memberList = document.getElementById("memberList");
+            memberList.innerHTML = "";
+            members.forEach(member => {
+              const li = document.createElement("li");
+              const profileImage = member.profileImage ? member.profileImage : "../image/cat.png";
+              const hostLabel = member.isHost == 1 ? " (Host)" : "";
+              li.innerHTML = `<img src="${profileImage}" alt="${member.Username}">
+                              <span>${member.Username}${hostLabel}</span>`;
+              memberList.appendChild(li);
+            });
+            document.getElementById("memberCount").textContent = "Members (" + members.length + ")";
+          } else {
+            console.error("Error fetching room members:", data.message);
+          }
+        })
+        .catch(error => console.error("Error:", error));
+
+      // ตัวอย่าง Event Listeners สำหรับปุ่มอื่น ๆ (Vote, Leave Room, etc.)
+      const voteFood = (voteType) => {
+        const foodName = document.getElementById("foodName")?.textContent || "";
+        const foodDescription = document.getElementById("foodDescription")?.textContent || "";
+        fetch(`${API_BASE_URL}/vote.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            roomID: roomID,
+            foodName: foodName,
+            vote: voteType,
+          }),
+        })
+          .then(response => response.json())
+          .then(result => {
+            alert(result.message);
+          })
+          .catch(error => console.error("Error sending vote for food:", error));
+      };
+
+
+
+      const leaveRoomBtn = document.getElementById("leaveRoomBtn");
+      if (leaveRoomBtn) {
+        leaveRoomBtn.addEventListener("click", function () {
+          leaveRoom(roomID);
+        });
+        leaveRoomBtn.addEventListener("click", function () {
+          const params = new URLSearchParams(window.location.search);
+          const roomID = params.get("roomID");
+          const userID = localStorage.getItem("userID");
+          if (!roomID || !userID) return;
+          fetch(`${API_BASE_URL}/leaveRoom.php`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              roomID: roomID,
+              joinerId: userID
+            })
+          })
+            .then(response => response.json())
+            .then(data => {
+              alert(data.message);
+              if (data.status === 'success') {
+                window.location.href = 'Home.html';
+              }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+      }
+
+      function leaveRoom(roomID) {
+        const userID = localStorage.getItem("userID");
+        const guestID = localStorage.getItem("guestUserID");
+        const joinerId = userID ? userID : guestID;
+        if (!roomID || !joinerId) {
+          alert("Missing parameters: roomID and joinerId are required.");
+          return;
+        }
+        fetch(`${API_BASE_URL}/leaveRoom.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            roomID: roomID,
+            joinerId: parseInt(joinerId)
+          }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert(data.message);
+            if (data.status === "success") {
+              window.location.href = "Home.html";
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      }
+
+      function updateMemberList(roomID) {
+        fetch(`${API_BASE_URL}/roomMembers.php?roomID=` + encodeURIComponent(roomID))
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === "success") {
+              document.getElementById("roomTitle").textContent = "Food Group #" + data.room_name;
+              const members = data.members;
+              const memberList = document.getElementById("memberList");
+              memberList.innerHTML = "";
+              members.forEach(member => {
+                const li = document.createElement("li");
+                const profileImage = member.profileImage ? member.profileImage : "../image/cat.png";
+                const hostLabel = member.isHost == 1 ? " (Host)" : "";
+                li.innerHTML = `<img src="${profileImage}" alt="${member.Username}">
+                                <span>${member.Username}${hostLabel}</span>`;
+                memberList.appendChild(li);
+              });
+              document.getElementById("memberCount").textContent = "Members (" + members.length + ")";
+            } else {
+              console.error("Error fetching room members:", data.message);
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      }
+
+      setInterval(() => {
+        const params = new URLSearchParams(window.location.search);
+        const roomID = params.get("roomID");
+        if (roomID) {
+          updateMemberList(roomID);
+        }
+      }, 5000);
+    });
+  </script>
+
+
+  <!-- API_BASE_URL ควรถูกประกาศไว้ในไฟล์ api.js หรือในสคริปต์นี้ -->
+  <script src="../api/api.js"></script>
+</body>
+
+</html>

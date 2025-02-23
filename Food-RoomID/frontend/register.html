@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>สมัครสมาชิก | FoodMeet</title>
+    <style>
+      body {
+        background-color: #ffeedc;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100%;
+      }
+      .form-box {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        width: 350px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        margin-bottom: 10px;
+        color: #333;
+      }
+      p {
+        font-size: 14px;
+        color: gray;
+      }
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      .social-btn {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .google {
+        background-color: #db4437;
+        color: white;
+      }
+      .facebook {
+        background-color: #1877f2;
+        color: white;
+      }
+      .divider {
+        margin: 15px 0;
+        font-size: 14px;
+        color: gray;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      label {
+        text-align: left;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+      input {
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      .main-btn {
+        background-color: #ff6b35;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        margin-top: 15px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .switch-auth {
+        margin-top: 15px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <div class="form-box">
+        <h2>🍽️ สมัครสมาชิก</h2>
+        <p>สร้างบัญชีของคุณเพื่อใช้งาน FoodMeet</p>
+
+        <!-- ข้อความผิดพลาด -->
+        <div id="error-message" class="error-message" style="display: none;"></div>
+
+        <button class="social-btn google">สมัครด้วย Google</button>
+        <button class="social-btn facebook">สมัครด้วย Facebook</button>
+
+        <div class="divider">หรือ</div>
+
+        <!-- ใช้ form เพื่อจัดระเบียบฟิลด์ แต่ไม่ใส่ action/method -->
+        <form id="register-form">
+          <label for="fullname">ชื่อ - นามสกุล</label>
+          <input
+            type="text"
+            id="fullname"
+            name="fullname"
+            placeholder="ชื่อของคุณ"
+            required
+          />
+
+          <label for="email">อีเมล</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="name@example.com"
+            required
+          />
+
+          <label for="password">รหัสผ่าน</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="ตั้งรหัสผ่านของคุณ"
+            required
+          />
+
+          <label for="confirm-password">ยืนยันรหัสผ่าน</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            placeholder="ยืนยันรหัสผ่านของคุณ"
+            required
+          />
+
+          <!-- เพิ่ม id ให้ปุ่ม เพื่อเรียก event ผ่าน JavaScript -->
+          <button type="button" id="btn-register" class="main-btn">
+            สมัครสมาชิก
+          </button>
+        </form>
+
+        <p class="switch-auth">
+          มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById('btn-register').addEventListener('click', async () => {
+        // อ่านค่าจาก input
+        const fullname = document.getElementById('fullname').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        // เคลียร์/แสดง error message
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+
+        try {
+          // เรียก API (Backend) แบบ JSON
+          const response = await fetch(`${API_BASE_URL}/register.php`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              fullname: fullname,
+              email: email,
+              password: password,
+              'confirm-password': confirmPassword
+            })
+          });
+
+          // แปลงผลลัพธ์จาก API เป็น JSON
+          const result = await response.json();
+          console.log(result);
+          
+          if (result.status === 'error') {
+            // แสดงข้อความผิดพลาด
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = result.message;
+          } else {
+            // สมัครสำเร็จ
+            alert('สมัครสมาชิกสำเร็จ');
+            // หรือจะ redirect ไปหน้า login, home หรือหน้าที่ต้องการ
+            // window.location.href = 'login.html';
+          }
+        } catch (err) {
+          console.error(err);
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'เกิดข้อผิดพลาดในการสมัครสมาชิก';
+        }
+      });
+    </script>
+    <script src="../api/api.js"></script>
+  </body>
+</html>
