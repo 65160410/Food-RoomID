@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GroupEats AI</title>
+    <style>
+        /* ตั้งค่าพื้นฐาน */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fef5e7;
+            margin: 0;
+            padding: 0;
+        }
+        /* ส่วนหัวของเว็บไซต์ */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000000;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .primary {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        /* ส่วนแนะนำร้านอาหาร */
+        .recommendations {
+            text-align: center;
+            margin: 30px;
+        }
+        .restaurant-list {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .restaurant-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            text-align: center;
+            position: relative;
+        }
+        .restaurant-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .rating {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff5733;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        .tags {
+            margin: 10px 0;
+        }
+        .tag {
+            display: inline-block;
+            background: #ffcc80;
+            color: black;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin: 3px;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .vote {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        .map {
+            background-color: #ffd699;
+        }
+        /* ส่วนสถานะการโหวต */
+        .voting-status {
+            background: white;
+            padding: 20px;
+            margin: 30px auto;
+            width: 60%;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .vote-list p {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+        }
+        .voted {
+            color: #ff5733;
+            font-weight: bold;
+        }
+        .waiting {
+            color: gray;
+        }
+        /* ส่วนท้ายเว็บไซต์ */
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        footer nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">🍽️ GroupEats AI</div>
+        <nav>
+            <a href="#">How it works</a>
+            <a href="#">About</a>
+            <button class="btn primary">Start New Search</button>
+        </nav>
+    </header>
+    <section class="recommendations">
+        <h2>AI Restaurant Recommendations</h2>
+        <p>Based on your group's preferences and dietary requirements</p>
+        <div class="restaurant-list" id="restaurant-list">
+            <!-- ข้อมูลร้านอาหารจะถูกโหลดจาก Back-End -->
+        </div>
+    </section>
+    <section class="voting-status">
+        <h3>Group Voting Status</h3>
+        <div class="vote-list" id="vote-list">
+            <!-- ข้อมูลสถานะการโหวตจะถูกโหลดจาก Back-End -->
+        </div>
+    </section>
+    <footer>
+        <p>© 2025 GroupEats AI</p>
+        <nav>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+        </nav>
+    </footer>
+
+    <script>
+        // ฟังก์ชันสำหรับโหลดข้อมูลร้านอาหาร
+        async function loadRestaurants() {
+            try {
+                const response = await fetch('group.php');
+                const data = await response.json();
+
+                const restaurantList = document.getElementById('restaurant-list');
+                restaurantList.innerHTML = ''; // Clear existing content
+
+                data.restaurants.forEach(restaurant => {
+                    const card = document.createElement('div');
+                    card.className = 'restaurant-card';
+                    card.innerHTML = `
+                        <img src="https://via.placeholder.com/250" alt="${restaurant.RestaurantName}">
+                        <div class="rating">⭐ ${restaurant.AverageRating}</div>
+                        <h3>${restaurant.RestaurantName}</h3>
+                        <p>${restaurant.Description}</p>
+                        <div class="tags">
+                            <span class="tag">${restaurant.CuisineType}</span>
+                        </div>
+                        <div class="actions">
+                            <button class="btn vote" data-id="${restaurant.RestaurantID}">Vote</button>
+                            <button class="btn map">📍 Map</button>
+                        </div>
+                    `;
+                    restaurantList.appendChild(card);
+                });
+
+                // เพิ่ม Event Listener สำหรับปุ่ม Vote
+                document.querySelectorAll('.vote').forEach(button => {
+                    button.addEventListener('click', handleVote);
+                });
+            } catch (error) {
+                console.error('Error loading restaurants:', error);
+            }
+        }
+
+        // ฟังก์ชันสำหรับจัดการการโหวต
+        async function handleVote(event) {
+            const restaurantId = event.target.dataset.id;
+
+            try {
+                const response = await fetch('group.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'vote',
+                        user_id: 1, // Replace with actual user ID
+                        room_id: 1, // Replace with actual room ID
+                        restaurant_id: restaurantId
+                    })
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    alert('Vote recorded successfully');
+                } else {
+                    alert('Failed to record vote');
+                }
+            } catch (error) {
+                console.error('Error voting:', error);
+            }
+        }
+
+        // ฟังก์ชันสำหรับโหลดสถานะการโหวต
+        async function loadVotingStatus() {
+            try {
+                const response = await fetch('group.php?room_id=1'); // Replace with actual room ID
+                const data = await response.json();
+
+                const voteList = document.getElementById('vote-list');
+                voteList.innerHTML = ''; // Clear existing content
+
+                data.voting_status.forEach(status => {
+                    const statusElement = document.createElement('p');
+                    statusElement.innerHTML = `
+                        👤 ${status.Username} 
+                        <span class="${status.VoteTime ? 'voted' : 'waiting'}">
+                            ${status.VoteTime ? `Voted for ${status.RestaurantName}` : 'Waiting for vote...'}
+                        </span>
+                    `;
+                    voteList.appendChild(statusElement);
+                });
+            } catch (error) {
+                console.error('Error loading voting status:', error);
+            }
+        }
+
+        // เรียกใช้งานฟังก์ชันเมื่อโหลดหน้าเว็บ
+        window.onload = () => {
+            loadRestaurants();
+            loadVotingStatus();
+        };
+    </script>
+</body>
+</html>
