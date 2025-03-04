@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- createRoom.html -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodMate - Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* CSS ของคุณ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #fff9f0;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      background-color: #fff9f0;
+      margin-left: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .create-room-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 3rem;
+      width: 450px;
+      text-align: center;
+    }
+
+    .create-room-card h2 {
+      color: #FF5722;
+      margin-bottom: 0.5rem;
+    }
+
+    .create-room-card p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .create-room-card input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .create-room-card button {
+      background-color: #FF5722;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .create-room-card button:hover {
+      background-color: #E64A19;
+    }
+
+    .create-room-card a {
+      color: #FF5722;
+      display: block;
+      margin-top: 1rem;
+      text-decoration: none;
+    }
+
+    .create-room-card a:hover {
+      text-decoration: underline;
+    }
+
+    .sidebar {
+      width: 200px;
+      background-color: #fff;
+      padding: 2rem 1rem;
+      border-right: 1px solid #f0f0f0;
+    }
+
+    .logo {
+      color: #ff5722;
+      font-weight: bold;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      color: #888;
+      padding: 0.75rem 0;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .menu-item i {
+      margin-right: 0.75rem;
+      font-size: 1.2rem;
+    }
+
+    .menu-item:hover {
+      color: #ff5722;
+    }
+
+    .profile-icon {
+      width: 20px;
+      height: 20px;
+      background-color: #888;
+      border-radius: 50%;
+      margin-right: 0.75rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <div class="logo">FoodMate</div>
+    <a href="Home.html" class="menu-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="#" class="menu-item">
+      <i class="fas fa-compass"></i>
+      <span>Explore</span>
+    </a>
+    <a href="#" class="menu-item">
+      <i class="fas fa-plus-circle"></i>
+      <span>New Room</span>
+    </a>
+    <a href="history.html" class="menu-item">
+      <i class="fas fa-history"></i>
+      <span>History</span>
+    </a>
+    <a href="#" class="menu-item">
+      <i class="fas fa-bell"></i>
+      <span>Notification</span>
+    </a>
+    <a href="profile.html" class="menu-item">
+      <div class="profile-icon"></div>
+      <span>Profile</span>
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="create-room-card">
+      <h2>Create Room</h2>
+      <p>Set up your dining group</p>
+      <!-- รับข้อมูลเฉพาะ roomName -->
+      <input type="text" id="roomName" placeholder="Enter room name">
+      <button id="createRoomBtn"><i class="fas fa-user-plus"></i> Create Room</button>
+      <a href="#"><i class="fas fa-link"></i> Share Room Link</a>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // อ่านข้อมูลจาก localStorage ทั้ง userID และ guestUserID
+      const userID = localStorage.getItem("userID");
+      const guestID = localStorage.getItem("guestUserID");
+      // ใช้ currentID: หากมี userID ให้ใช้ userID, ถ้าไม่มีก็ใช้ guestUserID
+      const currentID = userID ? userID : guestID;
+  
+      // หากไม่มี currentID ให้ redirect ไปที่หน้า Guest Setup (modeGuest.html)
+      if (!currentID) {
+        alert("ไม่พบข้อมูลสมาชิกหรือ Guest กรุณาเข้าสู่ระบบหรือเลือก Guest Mode");
+        window.location.href = "modeGuest.html";
+        return;
+      }
+  
+      // ตั้ง event listener ให้กับปุ่ม "Create Room"
+      document.getElementById("createRoomBtn").addEventListener("click", async function () {
+        const roomName = document.getElementById("roomName").value.trim();
+        if (!roomName) {
+          alert("กรุณากรอกชื่อห้อง");
+          return;
+        }
+  
+        // เตรียม payload สำหรับ API call
+        let payload = {
+          roomName: roomName,
+          createdBy: currentID
+        };
+  
+        // หากไม่มี userID (แสดงว่าเป็น Guest Mode) ให้ส่งข้อมูล Guest เพิ่มเติม
+        if (!userID) {
+          payload.guestName = localStorage.getItem("guestName");
+          payload.guestAvatar = localStorage.getItem("guestAvatar");
+        }
+  
+        try {
+          const response = await fetch(`${API_BASE_URL}/createRoom.php`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const result = await response.json();
+          console.log(result);
+  
+          if (result.status === "success") {
+            alert("Room created successfully!");
+            // Redirect ไปยังหน้า roomMembers.html พร้อมส่ง query string ที่มี RoomID, RoomCode และ host (currentID)
+            window.location.href = `roomMembers.html?roomID=${result.RoomID}&roomCode=${result.RoomCode}&host=${currentID}`;
+          } else {
+            alert(result.message || "Failed to create room.");
+          }
+        } catch (error) {
+          console.error("Error creating room: ", error);
+          alert("An error occurred while creating the room.");
+        }
+      });
+    });
+  </script>
+  <script src="../api/api.js"></script>
+  
+
+  <script src="../api/api.js"></script>
+
+</body>
+
+</html>

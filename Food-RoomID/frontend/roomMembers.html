@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Food Group</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ไอคอน Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* CSS สไตล์ตามที่มีอยู่ */
+    body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #ffeedc; color: #333; }
+    .header { display: flex; justify-content: space-between; align-items: center; background-color: #fff; padding: 10px 20px; border-bottom: 1px solid #eee; }
+    .header h2 { margin: 0; font-size: 20px; color: #ff5722; font-weight: bold; }
+    .leave-room { background: none; border: none; color: #6c757d; cursor: pointer; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+    .leave-room:hover { color: #343a40; }
+    .container { display: flex; width: 100%; margin-top: 0; }
+    .sidebar { width: 220px; background-color: #fff; padding: 20px; border-right: 1px solid #eee; }
+    .sidebar h3 { margin-top: 0; font-size: 16px; margin-bottom: 15px; color: #333; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar ul li { display: flex; align-items: center; margin-bottom: 10px; cursor: default; }
+    .sidebar ul li img { border-radius: 50%; width: 35px; height: 35px; margin-right: 10px; }
+    .main-content { flex: 1; padding: 20px; }
+    .search-bar { margin-bottom: 20px; display: flex; align-items: center; position: relative; }
+    .search-bar input { width: 250px; padding: 8px 35px 8px 15px; border-radius: 20px; border: 1px solid #ccc; font-size: 14px; outline: none; }
+    .search-bar .fa-magnifying-glass { position: absolute; right: 10px; color: #aaa; font-size: 14px; }
+    .cards-wrapper { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 20px; }
+    .food-card { position: relative; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); padding: 15px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; min-height: 350px; }
+    .food-card img { width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+    .food-card h3 { font-size: 16px; color: #333; margin: 0; margin-bottom: 5px; }
+    .food-card p { font-size: 14px; color: #666; margin: 0; margin-bottom: 15px; }
+    .delete-menu { position: absolute; top: 10px; right: 10px; background: transparent; border: none; font-size: 20px; cursor: pointer; color: #dc3545; }
+    .delete-menu:hover { color: #a71d2a; }
+    .like-btn { border: 1px solid #28a745; background-color: #e6fff5; color: #28a745; border-radius: 25px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: 0.3s ease; }
+    .like-btn:hover { background-color: #28a745; color: #fff; }
+    .like-btn.active { background-color: #28a745; color: #fff; }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .sidebar { width: 100%; display: flex; overflow-x: auto; border-right: none; border-bottom: 1px solid #eee; }
+      .main-content { width: 100%; }
+      .cards-wrapper { grid-template-columns: 1fr; }
+    }
+    .dropdown-card { position: absolute; background: #fff; border: 1px solid #ccc; width: 100%; max-height: 300px; overflow-y: auto; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .dropdown-item { display: flex; align-items: center; padding: 8px 12px; cursor: pointer; }
+    .dropdown-item:hover { background-color: #f0f0f0; }
+    .dropdown-item-img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; margin-right: 10px; }
+    .dropdown-item-name { font-size: 14px; color: #333; }
+    #countdownTimer { font-size: 24px; font-weight: bold; text-align: center; margin: 10px 0; color: #ff5722; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h2 id="roomTitle">Food Group #</h2>
+    <button class="leave-room" id="leaveRoomBtn"><i class="fas fa-door-open"></i> Leave Room</button>
+  </div>
+  <!-- Container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h3 id="memberCount">Members (0)</h3>
+      <ul id="memberList"></ul>
+    </div>
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Countdown Timer -->
+      <div id="countdownTimer">เวลาเหลือ: 45 วินาที</div>
+      <!-- Search bar -->
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="ค้นหาอาหารที่คุณชื่นชอบ">
+        <i class="fas fa-magnifying-glass"></i>
+      </div>
+      <!-- Dropdown สำหรับผลลัพธ์การค้นหา -->
+      <div id="dropdownWrapper"></div>
+      <!-- Cards Wrapper -->
+      <div class="cards-wrapper" id="selectedCards"></div>
+    </div>
+<!-- ปุ่ม Reset Time -->
+<button id="resetTimeBtn" style="margin: 10px; padding: 8px 16px; cursor: pointer;">
+  Reset Time
+</button>
+
+  </div>
+  <script src="../api/api.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+
+ const resetTimeBtn = document.getElementById("resetTimeBtn");
+  resetTimeBtn.addEventListener("click", function() {
+
+    fetch(`${API_BASE_URL}/resetRoomCountdown.php?roomID=${roomID}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success") {
+          // ตั้งค่า localStorage ให้เป็นค่าใหม่
+          localStorage.setItem("countdownStartTime", data.newStartTime);
+          console.log("Time reset to:", data.newStartTime);
+
+          // เรียกฟังก์ชัน startCountdown() หรือ updateCountdown() ใหม่
+          // เพื่อให้ตัวนับถอยหลังอัปเดตทันที
+          clearInterval(countdownInterval);
+          startCountdown();
+        } else {
+          console.error("Error resetting time:", data.message);
+          alert("ไม่สามารถรีเซ็ตเวลาได้: " + data.message);
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        alert("เกิดข้อผิดพลาดในการรีเซ็ตเวลา");
+      });
+  });
+
+      // --- กำหนดตัวแปรพื้นฐาน ---
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomID = urlParams.get("roomID");
+      const hostParam = urlParams.get("host");
+      if (!roomID) {
+        console.error("roomID parameter is missing in the URL");
+        return;
+      }
+      console.log("Room ID:", roomID);
+      
+      const searchInput = document.getElementById("searchInput");
+      const dropdownWrapper = document.getElementById("dropdownWrapper");
+      const selectedCardsContainer = document.getElementById("selectedCards");
+      const leaveRoomBtn = document.getElementById("leaveRoomBtn");
+      const countdownTimerEl = document.getElementById("countdownTimer");
+      
+      // --- ฟังก์ชันสำหรับเริ่มต้นการนับเวลาถอยหลังทันที ---
+      const countdownDuration = 45; // วินาที
+      let countdownInterval;
+function startCountdown() {
+  // ดึงค่า countdown start time จากเซิร์ฟเวอร์
+  fetch(`${API_BASE_URL}/getRoomCountdown.php?roomID=${roomID}`)
+    .then(response => response.json())
+    .then(data => {
+      // สมมุติว่า API ส่งกลับค่า { countdownStartTime: 1680000000000 }
+      const sharedStartTime = data.countdownStartTime;
+      // บันทึกลง localStorage (ถ้าต้องการ cache)
+      localStorage.setItem("countdownStartTime", sharedStartTime);
+      updateCountdown();
+      countdownInterval = setInterval(updateCountdown, 1000);
+    })
+    .catch(error => {
+      console.error("Error fetching shared countdown time:", error);
+    });
+}
+
+
+      
+
+function updateCountdown() {
+  const countdownStartTime = Number(localStorage.getItem("countdownStartTime"));
+  const elapsed = (Date.now() - countdownStartTime) / 1000;
+  let remaining = countdownDuration - elapsed;
+  if (remaining < 0) remaining = 0;
+  countdownTimerEl.textContent = `เวลาเหลือ: ${Math.floor(remaining)} วินาที`;
+  if (remaining <= 0) {
+    clearInterval(countdownInterval);
+    sendCalculateRequest();
+  }
+}
+
+      
+      // เริ่มนับเวลาถอยหลังทันทีที่หน้าเพจโหลด
+      startCountdown();
+      
+      // --- ส่งข้อมูลไป calculate.php เมื่อหมดเวลาถอยหลัง ---
+      function sendCalculateRequest() {
+  let voteList = localStorage.getItem("voteList");
+  try {
+    voteList = voteList ? JSON.parse(voteList) : [];
+  } catch (e) {
+    voteList = [];
+  }
+  if (voteList.length === 0) {
+    alert("คุณไม่ได้โหวตเมนูใด ๆ");
+    return;
+  }
+  
+  // แปลง voteList ให้เป็น array ของชื่อเมนู (string)
+  const votesArray = voteList.map(item => item.foodName ? item.foodName : item);
+  
+  const votesPayload = { votes: votesArray };
+  console.log("Sending aggregated votes to calculate.php:", votesPayload);
+  
+  fetch("https://angsila.informatics.buu.ac.th/~65160143/AJTae/calculate.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(votesPayload)
+  })
+    .then(response => response.text())
+    .then(calcText => {
+      if (!calcText) throw new Error("Empty response from calculate.php");
+      console.log("Raw response:", calcText);
+      return JSON.parse(calcText);
+    })
+    .then(calcResult => {
+      console.log("Response from calculate.php:", calcResult);
+      localStorage.setItem("aiResult", JSON.stringify(calcResult));
+      // เปลี่ยนหน้าไปยัง aiResuilt.html เมื่อได้รับผลลัพธ์
+      window.location.href = `aiResuilt.html?roomID=${roomID}`;
+    })
+    .catch(error => {
+      console.error("Error sending data to calculate.php:", error);
+      alert("เกิดข้อผิดพลาดในการส่งข้อมูลไปยัง AI");
+    });
+}
+
+      
+      // --- ฟังก์ชัน Search และ Dropdown ---
+      searchInput.addEventListener("input", function () {
+        const query = searchInput.value.trim().toLowerCase();
+        if (query.length > 0) {
+          searchMenuItems(query);
+        } else {
+          dropdownWrapper.innerHTML = "";
+        }
+      });
+      
+      async function searchMenuItems(query) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/searchMenuItems.php?q=${encodeURIComponent(query)}`);
+          const result = await response.json();
+          console.log("Search result:", result);
+          if (result.status === "success") {
+            displayMenuDropdown(result.data);
+          } else {
+            dropdownWrapper.innerHTML = "<p>ไม่พบข้อมูล</p>";
+          }
+        } catch (error) {
+          console.error("Error searching menu items:", error);
+          dropdownWrapper.innerHTML = "<p>เกิดข้อผิดพลาดในการค้นหา</p>";
+        }
+      }
+      
+      function displayMenuDropdown(items) {
+        if (!items || items.length === 0) {
+          dropdownWrapper.innerHTML = "<p>ไม่พบเมนูอาหารที่ค้นหา</p>";
+          return;
+        }
+        const dropdownContainer = document.createElement("div");
+        dropdownContainer.classList.add("dropdown-card");
+        items.forEach(item => {
+          const dropdownItem = document.createElement("div");
+          dropdownItem.classList.add("dropdown-item");
+          const base64Data = item.ImageURL ? item.ImageURL : "";
+          const imgSrc = base64Data ? `data:image/png;base64,${base64Data}` : "../image/cat.png";
+          dropdownItem.innerHTML = `
+            <img src="${imgSrc}" alt="${item.ItemName}" class="dropdown-item-img">
+            <span class="dropdown-item-name">${item.ItemName}</span>
+          `;
+          dropdownItem.addEventListener("click", function () {
+            const memberID = localStorage.getItem("userID") || localStorage.getItem("guestUserID");
+            if (!memberID) {
+              alert("ไม่พบข้อมูลผู้ใช้งาน กรุณาล็อกอินหรือเข้าในโหมด guest");
+              return;
+            }
+            const menuData = {
+              roomID: roomID,
+              memberID: memberID,
+              restaurantID: item.RestaurantID, // ถ้ามีข้อมูลจาก API
+              ItemName: item.ItemName,
+              description: item.description,
+              ImageURL: item.ImageURL
+            };
+            // บันทึกลงฐานข้อมูล selectMenu.php
+            fetch(`${API_BASE_URL}/selectMenu.php`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(menuData)
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.status === "success") {
+                  console.log("Menu selection saved.");
+                } else {
+                  console.error("Error saving menu selection:", data.message);
+                }
+              })
+              .catch(error => console.error("Error saving menu selection:", error));
+            createCard(menuData);
+            dropdownWrapper.innerHTML = "";
+            searchInput.value = item.ItemName;
+          });
+          dropdownContainer.appendChild(dropdownItem);
+        });
+        dropdownWrapper.innerHTML = "";
+        dropdownWrapper.appendChild(dropdownContainer);
+      }
+      
+      // --- updateVoteList: เก็บ vote เป็นอาร์เรย์ของอ็อบเจ็กต์ {userID, foodName} ---
+      function updateVoteList(itemTitle, add) {
+        const userID = localStorage.getItem("userID") || localStorage.getItem("guestUserID");
+        if (add) {
+          localStorage.setItem("voteList", JSON.stringify([{ userID: userID, foodName: itemTitle }]));
+        } else {
+          localStorage.removeItem("voteList");
+        }
+      }
+      
+      // --- สร้าง card พร้อมตรวจสอบสถานะ like ---
+      function createCard(menuItem) {
+        const card = document.createElement("div");
+        card.classList.add("food-card");
+        if (menuItem.restaurantID) {
+          card.setAttribute("data-restaurant-id", menuItem.restaurantID);
+        }
+        const base64Data = menuItem.ImageURL ? menuItem.ImageURL : "";
+        const imgSrc = base64Data ? `data:image/png;base64,${base64Data}` : "../image/cat.png";
+        card.innerHTML = `
+          <button class="delete-menu"><i class="fa-solid fa-xmark"></i></button>
+          <img src="${imgSrc}" alt="${menuItem.ItemName}">
+          <div class="food-info" style="text-align: left;">
+            <h3>${menuItem.ItemName}</h3>
+            <p>${menuItem.description ? menuItem.description : ""}</p>
+            <button class="like-btn">Like</button>
+          </div>
+        `;
+        selectedCardsContainer.appendChild(card);
+        attachDeleteMenuListener(card);
+        attachLikeListener(card);
+        let voteList = localStorage.getItem("voteList");
+        try {
+          voteList = voteList ? JSON.parse(voteList) : [];
+        } catch (e) {
+          voteList = [];
+        }
+        if (voteList.some(vote => vote.foodName === menuItem.ItemName)) {
+          const likeBtn = card.querySelector(".like-btn");
+          likeBtn.classList.add("active");
+        }
+      }
+      
+      // --- Event Listener สำหรับปุ่ม Delete ---
+      function attachDeleteMenuListener(card) {
+        const deleteButton = card.querySelector(".delete-menu");
+        deleteButton.addEventListener("click", function (e) {
+          e.stopPropagation();
+          const menuId = card.getAttribute("data-menu-id");
+          if (!menuId) {
+            alert("ไม่มีข้อมูลเมนูที่จะลบ");
+            return;
+          }
+          if (!confirm("คุณต้องการลบเมนูนี้ใช่หรือไม่?")) return;
+          fetch(`${API_BASE_URL}/deleteMenu.php`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: parseInt(menuId) })
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.status === "success") {
+                card.remove();
+                alert("เมนูถูกลบเรียบร้อยแล้ว!");
+              } else {
+                alert("เกิดข้อผิดพลาดในการลบเมนู: " + data.message);
+              }
+            })
+            .catch(err => {
+              console.error("Error deleting menu:", err);
+              alert("เกิดข้อผิดพลาดในการลบเมนู");
+            });
+        });
+      }
+      
+      // --- Event Listener สำหรับปุ่ม Like ---
+      function attachLikeListener(card) {
+        const likeButton = card.querySelector(".like-btn");
+        likeButton.addEventListener("click", function () {
+          const itemTitle = card.querySelector("h3").textContent.trim();
+          const userID = localStorage.getItem("userID") || localStorage.getItem("guestUserID");
+          if (!userID) {
+            alert("ไม่พบข้อมูลผู้ใช้งาน กรุณาล็อกอินหรือเข้าในโหมด guest");
+            return;
+          }
+          let voteList = localStorage.getItem("voteList");
+          try {
+            voteList = voteList ? JSON.parse(voteList) : [];
+          } catch (e) {
+            voteList = [];
+          }
+          if (voteList.length > 0) {
+            if (voteList[0].foodName === itemTitle) {
+              likeButton.classList.remove("active");
+              console.log(`Removed like for "${itemTitle}".`);
+              updateVoteList(itemTitle, false);
+              const dataToDelete = {
+                action: "delete",
+                roomID: roomID,
+                userID: userID,
+                foodName: itemTitle
+              };
+              fetch(`${API_BASE_URL}/vote.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataToDelete)
+              })
+                .then(response => response.text())
+                .then(text => {
+                  if (!text) throw new Error("Empty response from vote.php (delete)");
+                  return JSON.parse(text);
+                })
+                .then(result => {
+                  console.log("Response from vote.php (delete):", result);
+                })
+                .catch(error => {
+                  console.error("Error sending vote deletion data:", error);
+                  alert("เกิดข้อผิดพลาดในการลบข้อมูล vote");
+                });
+              return;
+            } else {
+              const dataToDelete = {
+                action: "delete",
+                roomID: roomID,
+                userID: userID,
+                foodName: voteList[0].foodName
+              };
+              fetch(`${API_BASE_URL}/vote.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataToDelete)
+              })
+                .then(response => response.text())
+                .then(text => {
+                  if (!text) throw new Error("Empty response from vote.php (delete)");
+                  return JSON.parse(text);
+                })
+                .then(result => {
+                  console.log("Deleted previous vote:", result);
+                  updateVoteList(voteList[0].foodName, false);
+                  sendLikeVote(itemTitle, userID, likeButton);
+                })
+                .catch(error => {
+                  console.error("Error deleting previous vote:", error);
+                  alert("เกิดข้อผิดพลาดในการลบ vote เก่า");
+                });
+              return;
+            }
+          } else {
+            sendLikeVote(itemTitle, userID, likeButton);
+          }
+          
+          function sendLikeVote(itemTitle, userID, likeButton) {
+            likeButton.classList.add("active");
+            const params = new URLSearchParams(window.location.search);
+            const roomID = params.get("roomID");
+            const dataToSend = {
+              action: "like",
+              roomID: roomID,
+              userID: userID,
+              foodName: itemTitle,
+              vote: 1
+            };
+            console.log("Sending vote data:", dataToSend);
+            fetch(`${API_BASE_URL}/vote.php`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(dataToSend)
+            })
+              .then(response => response.text())
+              .then(text => {
+                if (!text) throw new Error("Empty response from vote.php (like)");
+                return JSON.parse(text);
+              })
+              .then(result => {
+                console.log("Response from vote.php (like):", result);
+                if (result.status === "success") {
+                  updateVoteList(itemTitle, true);
+                } else {
+                  alert(result.message);
+                }
+              })
+              .catch(error => {
+                console.error("Error sending vote data:", error);
+                alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+              });
+          }
+        });
+      }
+      
+      // --- Polling เพื่ออัปเดต Card ---
+      function updateSelectedMenus() {
+        fetch(`${API_BASE_URL}/getSelectedMenus.php?roomID=${encodeURIComponent(roomID)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === "success") {
+              selectedCardsContainer.innerHTML = "";
+              data.selectedMenus.forEach(menuItem => {
+                createCard(menuItem);
+              });
+            } else {
+              console.error("Error fetching selected menus:", data.message);
+            }
+          })
+          .catch(error => console.error("Error fetching selected menus:", error));
+      }
+      setInterval(updateSelectedMenus, 5000);
+      
+      // --- Polling เพื่ออัปเดตข้อมูลห้อง ---
+      fetch(`${API_BASE_URL}/roomMembers.php?roomID=` + encodeURIComponent(roomID))
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === "success") {
+            document.getElementById("roomTitle").textContent = "Food Group #" + data.room_name;
+            const members = data.members;
+            const memberList = document.getElementById("memberList");
+            memberList.innerHTML = "";
+            members.forEach(member => {
+              const li = document.createElement("li");
+              const profileImage = member.Avatar ? member.Avatar : "../image/cat.png";
+              const hostLabel = member.isHost == 1 ? " (Host)" : "";
+              li.innerHTML = `<img src="${profileImage}" alt="${member.Username}">
+                              <span>${member.Username}${hostLabel}</span>`;
+              memberList.appendChild(li);
+            });
+            document.getElementById("memberCount").textContent = "Members (" + members.length + ")";
+          } else {
+            console.error("Error fetching room members:", data.message);
+          }
+        })
+        .catch(error => console.error("Error:", error));
+      setInterval(() => {
+        if (roomID) {
+          updateMemberList(roomID);
+        }
+      }, 5000);
+      function updateMemberList(roomID) {
+        fetch(`${API_BASE_URL}/roomMembers.php?roomID=` + encodeURIComponent(roomID))
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === "success") {
+              document.getElementById("roomTitle").textContent = "Food Group #" + data.room_name;
+              const members = data.members;
+              const memberList = document.getElementById("memberList");
+              memberList.innerHTML = "";
+              members.forEach(member => {
+                const li = document.createElement("li");
+                const profileImage = member.Avatar ? member.Avatar : "../image/cat.png";
+                const hostLabel = member.isHost == 1 ? " (Host)" : "";
+                li.innerHTML = `<img src="${profileImage}" alt="${member.Username}">
+                                <span>${member.Username}${hostLabel}</span>`;
+                memberList.appendChild(li);
+              });
+              document.getElementById("memberCount").textContent = "Members (" + members.length + ")";
+            } else {
+              console.error("Error fetching room members:", data.message);
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      }
+    });
+  </script>
+</body>
+</html>
