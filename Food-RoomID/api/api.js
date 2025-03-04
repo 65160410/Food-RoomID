@@ -1,1 +1,0 @@
-const API_BASE_URL = `https://angsila.informatics.buu.ac.th/~65160410/Food-RoomID/backend/api`;
