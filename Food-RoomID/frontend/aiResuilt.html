@@ -44,7 +44,6 @@
     .restaurant-box:hover {
       transform: scale(1.02);
     }
-    /* ส่วนอื่นๆ ของโค้ดที่มีอยู่เดิม */
     .dishes-container{display:flex;overflow-x:auto;padding:0 15px;scrollbar-width:none}
     .dishes-container::-webkit-scrollbar{display:none}
     .location-hours{margin:0 15px 25px;background:#fff;border-radius:10px;padding:15px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
@@ -70,14 +69,12 @@
   <!-- Top result in restaurant-info -->
   <div class="restaurant-info" id="top-result">
     <div class="top-result">
-      <!-- Improved image with lazy loading -->
-<img
-  id="restaurant-hero-image"
-  alt="Restaurant Hero Image"
-  class="hero-image"
-  loading="lazy"
-/>
-
+      <img
+        id="restaurant-hero-image"
+        alt="Restaurant Hero Image"
+        class="hero-image"
+        loading="lazy"
+      />
       <div>
         <h1 class="restaurant-name">Loading...</h1>
         <div class="restaurant-categories">
@@ -89,34 +86,35 @@
         <span>Loading...</span>
       </div>
     </div>
-
   </div>
   
   <!-- Section สำหรับแสดงผลลัพธ์เพิ่มเติมเป็น grid 2 box ต่อแถว -->
   <div id="restaurant-grid"></div>
   
   <script>
-    // เมื่อโหลดหน้าเว็บ ให้อัปเดตผลลัพธ์จาก localStorage (aiResult)
+    // ดึงค่าพารามิเตอร์ roomID จาก URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomID = urlParams.get("roomID");
+
+    // เมื่อหน้าโหลดเสร็จ ให้อ่านผลลัพธ์จาก localStorage (aiResult) และแสดงในหน้า
     window.addEventListener("load", function() {
       const storedResult = localStorage.getItem("aiResult");
-
       if (storedResult) {
         try {
           const aiData = JSON.parse(storedResult);
-                   if (Array.isArray(aiData) && aiData.length > 0) {
-            // เรียงลำดับผลลัพธ์ตาม matchCount จากมากไปน้อย
-            aiData.sort((a, b) => b.matchCount - a.matchCount);
-            // แสดงผล top result ในส่วน restaurant-info
+          if (Array.isArray(aiData) && aiData.length > 0) {
+            aiData.sort((a, b) => b.matchCount - a.matchCount); // เรียงตาม matchCount
+            // แสดง top result
             const topRestaurant = aiData[0];
             document.querySelector(".restaurant-name").textContent = topRestaurant.restaurantName;
             document.querySelector(".restaurant-categories span").textContent = topRestaurant.description;
             document.querySelector(".restaurant-rating span").textContent = topRestaurant.averageRating;
 
-            // เมื่อคลิกที่ top result ให้ไปที่หน้า restaurant_detail.html พร้อมส่ง restaurantID
+            // เมื่อคลิก top-result ให้ไปหน้า restaurant_detail.html พร้อมส่ง restaurantID & roomID
             document.getElementById("top-result").addEventListener("click", function() {
-              window.location.href = `restaurant_detail.html?restaurantID=${topRestaurant.id}`;
+              window.location.href = `restaurant_detail.html?restaurantID=${topRestaurant.id}&roomID=${roomID}`;
             });
-            // แสดงผลลัพธ์เพิ่มเติม (จาก index 1 ขึ้นไป) ใน grid
+            // แสดงผลเพิ่มเติม
             displayGridResults(aiData.slice(1));
           }
         } catch (e) {
@@ -127,7 +125,7 @@
       }
     });
     
-    // ฟังก์ชันสำหรับแสดงผลลัพธ์ในรูปแบบ grid 2 box ต่อแถว
+    // ฟังก์ชันแสดงผลลัพธ์ในรูปแบบ grid
     function displayGridResults(data) {
       const gridContainer = document.getElementById("restaurant-grid");
       gridContainer.innerHTML = "";
@@ -143,9 +141,9 @@
               <span>${item.averageRating}</span>
             </div>
           `;
-          // เมื่อคลิกที่ box ให้ไปที่หน้า restaurant_detail.html พร้อมส่ง restaurantID
+          // คลิก box => restaurant_detail.html?restaurantID=...&roomID=...
           box.addEventListener("click", function() {
-            window.location.href = `restaurant_detail.html?restaurantID=${item.id}`;
+            window.location.href = `restaurant_detail.html?restaurantID=${item.id}&roomID=${roomID}`;
           });
           gridContainer.appendChild(box);
         });
@@ -153,52 +151,47 @@
         gridContainer.innerHTML = "<p>ไม่มีผลลัพธ์เพิ่มเติม</p>";
       }
     }
-   // ฟังก์ชันสำหรับอัปเดตผลลัพธ์จาก calculate API ผ่าน vote counts
-const urlParams = new URLSearchParams(window.location.search);
-const roomID = urlParams.get("roomID");
 
-function fetchVoteCounts() {
-  fetch(`${API_BASE_URL}/getVoteCounts.php?roomID=${roomID}`)
-    .then(response => response.json())
-    .then(data => {
-      console.log("Vote counts from DB:", data);
-      fetch('https://angsila.informatics.buu.ac.th/~65160143/AJTae/Testapinew.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(result => {
-        console.log("ผลลัพธ์จาก calculate API:", result);
-        if (Array.isArray(result) && result.length > 0) {
-          result.sort((a, b) => b.matchCount - a.matchCount);
-          // อัปเดต top result ใน restaurant-info
-          const topRestaurant = result[0];
-          document.querySelector('.restaurant-name').textContent = topRestaurant.restaurantName;
-          document.querySelector('.restaurant-categories span').textContent = topRestaurant.description;
-          
-          // ถ้ามีข้อมูล image (Base64) ให้แสดงบน <img> ที่มี id "restaurant-hero-image"
-          if (topRestaurant.image) {
-            const base64Image = "data:image/jpeg;base64," + topRestaurant.image;
-            document.getElementById("restaurant-hero-image").src = base64Image;
-          }
-          
-          // **เพิ่ม event listener สำหรับ top-result ที่ใช้ข้อมูลจาก topRestaurant ใหม่**
-          document.getElementById("top-result").addEventListener("click", function() {
-            window.location.href = `restaurant_detail.html?restaurantID=${topRestaurant.id}`;
-          });
-          
-          // แสดงผลลัพธ์ที่เหลือใน grid (เริ่มจาก index 1)
-          displayGridResults(result.slice(1));
-        }
-      })
-      .catch(error => console.error("เกิดข้อผิดพลาดในการส่งข้อมูลไปที่ calculate API:", error));
-    })
-    .catch(error => console.error("Error fetching vote counts:", error));
-}
-
-window.addEventListener("load", fetchVoteCounts);
-
+    // เรียกข้อมูล voteCounts จาก DB แล้วส่งไปยัง Testapinew.php
+    function fetchVoteCounts() {
+      fetch(`${API_BASE_URL}/getVoteCounts.php?roomID=${roomID}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("Vote counts from DB:", data);
+          fetch('https://angsila.informatics.buu.ac.th/~65160143/AJTae/Testapinew.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(result => {
+            console.log("ผลลัพธ์จาก calculate API:", result);
+            if (Array.isArray(result) && result.length > 0) {
+              result.sort((a, b) => b.matchCount - a.matchCount);
+              // อัปเดต top
+              const topRestaurant = result[0];
+              document.querySelector('.restaurant-name').textContent = topRestaurant.restaurantName;
+              document.querySelector('.restaurant-categories span').textContent = topRestaurant.description;
+              
+              // ถ้ามีรูป ให้แสดงบน hero
+              if (topRestaurant.image) {
+                const base64Image = "data:image/jpeg;base64," + topRestaurant.image;
+                document.getElementById("restaurant-hero-image").src = base64Image;
+              }
+              
+              // eventListener สำหรับ top-result
+              document.getElementById("top-result").addEventListener("click", function() {
+                window.location.href = `restaurant_detail.html?restaurantID=${topRestaurant.id}&roomID=${roomID}`;
+              });
+              
+              // แสดงใน grid
+              displayGridResults(result.slice(1));
+            }
+          })
+          .catch(error => console.error("เกิดข้อผิดพลาดในการส่งข้อมูลไปที่ calculate API:", error));
+        })
+        .catch(error => console.error("Error fetching vote counts:", error));
+    }
 
     window.addEventListener("load", fetchVoteCounts);
   </script>

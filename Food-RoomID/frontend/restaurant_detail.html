@@ -6,18 +6,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Restaurant Details</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}body{background-color:#f5f5f5}.header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background-color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.1)}.back-button{text-decoration:none;color:#333;display:flex;align-items:center}.share-button{background:none;border:none;color:#333;cursor:pointer}.hero-image{width:100%;height:250px;object-fit:cover}.restaurant-info{background-color:#fff;border-radius:15px;margin:-20px 15px 0;padding:20px;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.1)}.restaurant-name{font-size:24px;font-weight:700;margin-bottom:5px}.restaurant-categories{color:#666;margin-bottom:15px}.restaurant-rating{position:absolute;top:20px;right:20px;background-color:#fef2e4;color:#ff8c00;padding:5px 10px;border-radius:15px;font-weight:700}.restaurant-hours-price{display:flex;align-items:center;color:#666;margin-bottom:15px}.price-level{margin-left:15px;color:#666}.action-buttons{display:flex;margin:15px -5px}.action-button{flex:1;margin:0 5px;padding:12px;border:none;border-radius:8px;background-color:#ff7043;color:#fff;font-weight:700;cursor:pointer;display:flex;justify-content:center;align-items:center}.action-button i{margin-right:8px}.section-title{font-size:18px;font-weight:700;margin:25px 15px 15px}.dishes-container{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;padding:0 15px;scrollbar-width:none}.dishes-container::-webkit-scrollbar{display:none}.dish-card{min-width:280px;margin-right:15px;background-color:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.1)}.dish-image{width:100%;height:180px;object-fit:cover}.dish-info{padding:12px}.dish-name{font-weight:700;margin-bottom:5px}.dish-price{color:#666}.location-hours{margin:0 15px 25px;background-color:#fff;border-radius:10px;padding:15px;box-shadow:0 2px 5px rgba(0,0,0,.1)}.location-address,.hours-row{display:flex;align-items:center;margin-bottom:10px;color:#666}.location-address i,.hours-row i{color:#ff7043;margin-right:10px;width:20px}.hours-details{margin-left:30px}.heart-button{position:absolute;top:15px;right:15px;background:#fff;border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 5px rgba(0,0,0,.2);cursor:pointer}.heart-icon{color:#ff7043;font-size:20px}.popular-dish-card{flex:1 1 280px;background-color:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.1);padding:15px;cursor:pointer;text-align:center;margin:auto}.popular-dish-name{margin:0 0 5px;font-size:18px;font-weight:700}.popular-dish-description{margin:0 0 5px;font-size:14px;color:#666}.popular-dish-price{margin:0;color:#ff7043;font-weight:700}@media(max-width:768px){.popular-dish-card{flex:1 1 90%}}
+  <style>
+    /* CSS styles */
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{background-color:#f5f5f5}
+    .header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background-color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+    .back-button{text-decoration:none;color:#333;display:flex;align-items:center}
+    .share-button{background:none;border:none;color:#333;cursor:pointer}
+    .hero-image{width:100%;height:250px;object-fit:cover}
+    .restaurant-info{background-color:#fff;border-radius:15px;margin:-20px 15px 0;padding:20px;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+    .restaurant-name{font-size:24px;font-weight:700;margin-bottom:5px}
+    .restaurant-categories{color:#666;margin-bottom:15px}
+    .restaurant-rating{position:absolute;top:20px;right:20px;background-color:#fef2e4;color:#ff8c00;padding:5px 10px;border-radius:15px;font-weight:700}
+    .restaurant-hours-price{display:flex;align-items:center;color:#666;margin-bottom:15px}
+    .price-level{margin-left:15px;color:#666}
+    .action-buttons{display:flex;margin:15px -5px}
+    .action-button{flex:1;margin:0 5px;padding:12px;border:none;border-radius:8px;background-color:#ff7043;color:#fff;font-weight:700;cursor:pointer;display:flex;justify-content:center;align-items:center}
+    .action-button i{margin-right:8px}
+    .section-title{font-size:18px;font-weight:700;margin:25px 15px 15px}
+    .dishes-container{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;padding:0 15px;scrollbar-width:none}
+    .dishes-container::-webkit-scrollbar{display:none}
+    .dish-card{min-width:280px;margin-right:15px;background-color:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+    .dish-image{width:100%;height:180px;object-fit:cover}
+    .dish-info{padding:12px}
+    .dish-name{font-weight:700;margin-bottom:5px}
+    .dish-price{color:#666}
+    .location-hours{margin:0 15px 25px;background-color:#fff;border-radius:10px;padding:15px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+    .location-address,.hours-row{display:flex;align-items:center;margin-bottom:10px;color:#666}
+    .location-address i,.hours-row i{color:#ff7043;margin-right:10px;width:20px}
+    .hours-details{margin-left:30px}
+    .heart-button{position:absolute;top:15px;right:15px;background:#fff;border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 5px rgba(0,0,0,.2);cursor:pointer}
+    .heart-icon{color:#ff7043;font-size:20px}
+    .popular-dish-card{flex:1 1 280px;background-color:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.1);padding:15px;cursor:pointer;text-align:center;margin:auto}
+    .popular-dish-name{margin:0 0 5px;font-size:18px;font-weight:700}
+    .popular-dish-description{margin:0 0 5px;font-size:14px;color:#666}
+    .popular-dish-price{margin:0;color:#ff7043;font-weight:700}
+    @media(max-width:768px){.popular-dish-card{flex:1 1 90%}}
   </style>
 </head>
 <body>
   <!-- Header with back and share buttons -->
   <div class="header">
-  <a href="#" class="back-button" id="backLink">
-    <i class="fas fa-arrow-left"></i>
-    <span style="margin-left:8px;">Restaurant Detail</span>
-  </a>
-
+    <a href="#" class="back-button" id="backLink">
+      <i class="fas fa-arrow-left"></i>
+      <span style="margin-left:8px;">Restaurant Detail</span>
+    </a>
     <button class="share-button">
       <i class="fas fa-share-alt"></i>
     </button>
@@ -42,7 +75,7 @@
       <span>Loading...</span>
     </div>
     <div class="restaurant-hours-price">
-      <span><i class="far fa-clock" style="margin-right: 5px;"></i>Loading...</span>
+      <span><i class="far fa-clock" style="margin-right:5px;"></i>Loading...</span>
       <span class="price-level">Loading...</span>
     </div>
   </div>
@@ -53,8 +86,6 @@
     <!-- Popular dishes will be loaded here -->
   </div>
 
-
-  
   <!-- Location and hours section -->
   <h2 class="section-title">Location & Hours</h2>
   <div class="location-hours">
@@ -73,30 +104,24 @@
   </div>
   
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // อ่าน roomID จาก Query String (URL) ของหน้านี้
-      const urlParams = new URLSearchParams(window.location.search);
-      let roomID = urlParams.get('roomID');
-
-      // (ถ้าต้องการซัพพอร์ต localStorage ด้วย ก็สามารถเพิ่มตรรกะได้ เช่น)
-      // if (!roomID) {
-      //   roomID = localStorage.getItem('roomID');
-      // } else {
-      //   localStorage.setItem('roomID', roomID);
-      // }
-
-      // อ้างอิงปุ่ม (ลิงก์) ย้อนกลับด้วย id="backLink"
-      const backLink = document.getElementById('backLink');
-
-      // ถ้าเจอค่า roomID ให้ใส่ลงในลิงก์ aiResuilt.html?roomID=...
-      if (roomID) {
-        backLink.href = `aiResuilt.html?roomID=${roomID}`;
-      } else {
-        // ถ้าไม่เจอ (อาจไม่มีใน URL) ก็กลับไป aiResuilt.html ธรรมดา
-        backLink.href = 'aiResuilt.html';
-      }
-    });
-
+  document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let roomID = urlParams.get("roomID");
+    
+    // ถ้าค่า roomID เป็น null หรือ "null" ให้เคลียร์
+    if (!roomID || roomID === "null") {
+      roomID = "";
+    }
+    // ตั้งค่า href ของปุ่ม backLink
+    const backLink = document.getElementById("backLink");
+    if (roomID) {
+      backLink.href = `aiResuilt.html?roomID=${roomID}`;
+    } else {
+      backLink.href = "aiResuilt.html";
+    }
+    console.log("RoomID:", roomID);
+    console.log("Back link set to:", backLink.href);
+  });
 
   async function loadRestaurantDetails() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -122,113 +147,89 @@
       document.querySelector('.restaurant-rating span').textContent = data.restaurant.AverageRating || "N/A";
       document.querySelector('.restaurant-categories span').textContent = data.restaurant.CuisineType || "N/A";
       document.querySelector('.location-address span').textContent = data.restaurant.Address || "N/A";
-
-      // โหลด Popular Dishes (เลือก 2 เมนูแรก)
+      
+      // โหลด Popular Dishes
       loadPopularDishes(restaurantID);
-      // โหลดรายการเมนูทั้งหมด
+      // โหลดรายการเมนู
       loadMenuItems(restaurantID);
     } catch (error) {
       console.error("Error loading restaurant details:", error);
     }
   }
 
-  // ดึงข้อมูลเมนูอาหารและเลือก 2 รายการมาแสดงในส่วน Popular Dishes
- async function loadPopularDishes(restaurantID) {
-  try {
-    const url = `${API_BASE_URL}/getMenuItems.php?restaurantID=${restaurantID}`;
-    console.log("Fetching URL:", url);
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log("Popular dishes:", data);
+  async function loadPopularDishes(restaurantID) {
+    try {
+      const url = `${API_BASE_URL}/getMenuItems.php?restaurantID=${restaurantID}`;
+      console.log("Fetching URL:", url);
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log("Popular dishes:", data);
 
-    const dishesContainer = document.getElementById('dishes-container');
-    if (data.status === 'success' && data.menuItems.length > 0) {
-      // เลือก 2 เมนูแรก
-      const popularDishes = data.menuItems.slice(0, 2);
-      let html = '';
-      popularDishes.forEach(item => {
-        let itemImage = '';
-        // ใช้ ImageURL จาก API โดยสมมติว่าข้อมูลเป็น Base64 (ถ้าเป็น URL จริงให้เอา prefix "data:image/jpeg;base64," ออก)
-        if (item.ImageURL) {
-          itemImage = `<img src="data:image/jpeg;base64,${item.ImageURL}" alt="${item.ItemName}" style="display:block; max-width:150px; height:auto; margin:0 auto 10px;">`;
-        }
-        html += `
-          <div class="popular-dish-card">
-            ${itemImage}
-            <h3 class="popular-dish-name">${item.ItemName}</h3>
-            <p class="popular-dish-description">${item.Description || ''}</p>
-            <p class="popular-dish-price">${item.Price ? '฿' + item.Price : ''}</p>
-          </div>
-        `;
-      });
-      dishesContainer.innerHTML = html;
-    } else {
-      dishesContainer.innerHTML = "<p>ไม่มีข้อมูล Popular Dishes</p>";
+      const dishesContainer = document.getElementById('dishes-container');
+      if (data.status === 'success' && data.menuItems.length > 0) {
+        const popularDishes = data.menuItems.slice(0, 2);
+        let html = '';
+        popularDishes.forEach(item => {
+          let itemImage = '';
+          if (item.ImageURL) {
+            itemImage = `<img src="data:image/jpeg;base64,${item.ImageURL}" alt="${item.ItemName}" style="display:block;max-width:150px;height:auto;margin:0 auto 10px;">`;
+          }
+          html += `
+            <div class="popular-dish-card">
+              ${itemImage}
+              <h3 class="popular-dish-name">${item.ItemName}</h3>
+              <p class="popular-dish-description">${item.Description || ''}</p>
+              <p class="popular-dish-price">${item.Price ? '฿' + item.Price : ''}</p>
+            </div>
+          `;
+        });
+        dishesContainer.innerHTML = html;
+      } else {
+        dishesContainer.innerHTML = "<p>ไม่มีข้อมูล Popular Dishes</p>";
+      }
+    } catch (error) {
+      console.error("Error loading popular dishes:", error);
+      document.getElementById('dishes-container').innerHTML = "<p>Error loading popular dishes.</p>";
     }
-  } catch (error) {
-    console.error("Error loading popular dishes:", error);
-    document.getElementById('dishes-container').innerHTML = "<p>Error loading popular dishes.</p>";
   }
-}
 
+  async function loadMenuItems(restaurantID) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/getMenuItems.php?restaurantID=${restaurantID}`);
+      const data = await response.json();
+      console.log("Menu items:", data);
 
-
-
-  // ดึงข้อมูลเมนูอาหารทั้งหมดมาแสดงในส่วน "เมนูอาหาร"
- async function loadMenuItems(restaurantID) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/getMenuItems.php?restaurantID=${restaurantID}`);
-    const data = await response.json();
-    console.log("Menu items:", data);
-
-    const menuList = document.getElementById('menu-list');
-    if (data.status === 'success' && data.menuItems.length > 0) {
-      let html = '';
-      data.menuItems.forEach(item => {
-        let itemImage = '';
-        // ใช้ imageURL ที่ส่งมาจาก API หากมี
-        if (item.ImageURL) {
-          itemImage = `<img src="${item.ImageURL}" alt="${item.ItemName}" class="dish-image">`;
-        }
-
-      });
-    
-    } else {
-      menuList.innerHTML = "<p>ไม่มีเมนูอาหาร</p>";
+      const menuList = document.getElementById('menu-list');
+      if (data.status === 'success' && data.menuItems.length > 0) {
+        let html = '';
+        data.menuItems.forEach(item => {
+          let itemImage = '';
+          if (item.ImageURL) {
+            itemImage = `<img src="${item.ImageURL}" alt="${item.ItemName}" class="dish-image">`;
+          }
+          html += `
+            <div class="dish-card">
+              ${itemImage}
+              <div class="dish-info">
+                <h3 class="dish-name">${item.ItemName}</h3>
+                <p>${item.Description || ''}</p>
+                <p class="dish-price">${item.Price ? '฿' + item.Price : ''}</p>
+              </div>
+            </div>
+          `;
+        });
+        menuList.innerHTML = html;
+      } else {
+        menuList.innerHTML = "<p>ไม่มีเมนูอาหาร</p>";
+      }
+    } catch (error) {
+      console.error("Error loading menu items:", error);
+      document.getElementById('menu-list').innerHTML = "<p>Error loading menu items.</p>";
     }
-  } catch (error) {
-    console.error("Error loading menu items:", error);
-    document.getElementById('menu-list').innerHTML = "<p>Error loading menu items.</p>";
   }
-}
-
-  window.addEventListener("DOMContentLoaded", function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    // พยายามดึง roomID จาก query string
-    let roomID = urlParams.get("roomID");
-    // หากไม่พบ roomID ให้ลองดึงจาก localStorage
-    if (!roomID) {
-      roomID = localStorage.getItem("roomID");
-    } else {
-      // ถ้ามี roomID ใน URL ให้บันทึกไว้ใน localStorage เพื่อใช้งานในอนาคต
-      localStorage.setItem("roomID", roomID);
-    }
-    
-    const backButton = document.querySelector(".back-button");
-    if (roomID) {
-      backButton.href = `aiResuilt.html?roomID=${roomID}`;
-    } else {
-      backButton.href = "aiResuilt.html";
-    }
-  });
 
   window.onload = loadRestaurantDetails;
 </script>
-
-
-  
-  <!-- แทรกไฟล์ JavaScript ภายนอก -->
-  <script src="../api/api.js"></script>
-  
+<script src="../api/api.js"></script>
 </body>
 </html>

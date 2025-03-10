@@ -16,7 +16,7 @@ $restaurantID = $_GET['restaurantID'];
 
 try {
     // เตรียมคำสั่ง SQL เพื่อดึงข้อมูลร้านอาหารตาม restaurantID
-    $stmt = $pdo->prepare("SELECT RestaurantID, RestaurantName, Image, AverageRating, CuisineType,Address FROM restaurants WHERE RestaurantID = :restaurantID");
+    $stmt = $pdo->prepare("SELECT RestaurantID, RestaurantName, Image, AverageRating, CuisineType,Address, OpeningHours FROM restaurants WHERE RestaurantID = :restaurantID");
     $stmt->bindParam(':restaurantID', $restaurantID);
     $stmt->execute();
     
