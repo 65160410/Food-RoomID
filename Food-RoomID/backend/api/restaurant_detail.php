@@ -1,5 +1,5 @@
 <?php
-//aiResuilt.php
+// restaurant_detail.php
 header('Content-Type: application/json');
 require_once 'db.php'; // เชื่อมต่อฐานข้อมูล
 
@@ -15,7 +15,8 @@ function getRestaurantDetails($pdo, $restaurantId)
                 Description, 
                 AverageRating, 
                 CuisineType, 
-                Address 
+                Address,
+                image
             FROM restaurants 
             WHERE RestaurantID = :restaurant_id
         ");
@@ -53,7 +54,8 @@ function getRestaurantDetails($pdo, $restaurantId)
 
 // ตรวจสอบว่ามีการส่งคำขอ GET มาหรือไม่
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $restaurantId = filter_var($_GET['id'], FILTER_VALIDATE_INT); // รับ ID ร้านอาหารจาก Query String
+    // เปลี่ยนจากการรับ id เป็น restaurantID
+    $restaurantId = filter_var($_GET['restaurantID'], FILTER_VALIDATE_INT);
 
     if (!$restaurantId) {
         echo json_encode(['status' => 'error', 'message' => 'Invalid restaurant ID']);

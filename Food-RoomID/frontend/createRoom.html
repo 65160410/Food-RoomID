@@ -211,7 +211,7 @@
           console.log(result);
   
           if (result.status === "success") {
-            alert("Room created successfully!");
+            
             // Redirect ไปยังหน้า roomMembers.html พร้อมส่ง query string ที่มี RoomID, RoomCode และ host (currentID)
             window.location.href = `roomMembers.html?roomID=${result.RoomID}&roomCode=${result.RoomCode}&host=${currentID}`;
           } else {

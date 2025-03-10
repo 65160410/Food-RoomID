@@ -71,12 +71,13 @@
   <div class="restaurant-info" id="top-result">
     <div class="top-result">
       <!-- Improved image with lazy loading -->
-      <img
-        src="../image/cat.png"
-        alt="Restaurant Hero Image"
-        class="hero-image"
-        loading="lazy"
-      />
+<img
+  id="restaurant-hero-image"
+  alt="Restaurant Hero Image"
+  class="hero-image"
+  loading="lazy"
+/>
+
       <div>
         <h1 class="restaurant-name">Loading...</h1>
         <div class="restaurant-categories">
@@ -98,12 +99,11 @@
     // เมื่อโหลดหน้าเว็บ ให้อัปเดตผลลัพธ์จาก localStorage (aiResult)
     window.addEventListener("load", function() {
       const storedResult = localStorage.getItem("aiResult");
-      console.log("Loaded aiResult from localStorage:", storedResult);
+
       if (storedResult) {
         try {
           const aiData = JSON.parse(storedResult);
-          console.log("Parsed aiResult:", JSON.stringify(aiData, null, 2));
-          if (Array.isArray(aiData) && aiData.length > 0) {
+                   if (Array.isArray(aiData) && aiData.length > 0) {
             // เรียงลำดับผลลัพธ์ตาม matchCount จากมากไปน้อย
             aiData.sort((a, b) => b.matchCount - a.matchCount);
             // แสดงผล top result ในส่วน restaurant-info
@@ -111,7 +111,7 @@
             document.querySelector(".restaurant-name").textContent = topRestaurant.restaurantName;
             document.querySelector(".restaurant-categories span").textContent = topRestaurant.description;
             document.querySelector(".restaurant-rating span").textContent = topRestaurant.averageRating;
-            document.querySelector(".price-level").textContent = topRestaurant.priceLevel ? topRestaurant.priceLevel : "N/A";
+
             // เมื่อคลิกที่ top result ให้ไปที่หน้า restaurant_detail.html พร้อมส่ง restaurantID
             document.getElementById("top-result").addEventListener("click", function() {
               window.location.href = `restaurant_detail.html?restaurantID=${topRestaurant.id}`;
@@ -153,37 +153,53 @@
         gridContainer.innerHTML = "<p>ไม่มีผลลัพธ์เพิ่มเติม</p>";
       }
     }
-    
-    // ฟังก์ชันสำหรับอัปเดตผลลัพธ์จาก calculate API ผ่าน vote counts
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomID = urlParams.get("roomID");
-    function fetchVoteCounts() {
-      fetch(`${API_BASE_URL}/getVoteCounts.php?roomID=${roomID}`)
-        .then(response => response.json())
-        .then(data => {
-          console.log("Vote counts from DB:", data);
-          fetch('https://angsila.informatics.buu.ac.th/~65160143/AJTae/calculate.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-          })
-          .then(response => response.json())
-          .then(result => {
-            console.log("ผลลัพธ์จาก calculate API:", result);
-            if (Array.isArray(result) && result.length > 0) {
-              result.sort((a, b) => b.matchCount - a.matchCount);
-              // อัปเดต top result ใน restaurant-info
-              const topRestaurant = result[0];
-              document.querySelector('.restaurant-name').textContent = topRestaurant.restaurantName;
-              document.querySelector('.restaurant-categories span').textContent = topRestaurant.description;
-              // แสดงผลลัพธ์ที่เหลือใน grid (เริ่มจาก index 1)
-              displayGridResults(result.slice(1));
-            }
-          })
-          .catch(error => console.error("เกิดข้อผิดพลาดในการส่งข้อมูลไปที่ calculate API:", error));
-        })
-        .catch(error => console.error("Error fetching vote counts:", error));
-    }
+   // ฟังก์ชันสำหรับอัปเดตผลลัพธ์จาก calculate API ผ่าน vote counts
+const urlParams = new URLSearchParams(window.location.search);
+const roomID = urlParams.get("roomID");
+
+function fetchVoteCounts() {
+  fetch(`${API_BASE_URL}/getVoteCounts.php?roomID=${roomID}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log("Vote counts from DB:", data);
+      fetch('https://angsila.informatics.buu.ac.th/~65160143/AJTae/Testapinew.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        console.log("ผลลัพธ์จาก calculate API:", result);
+        if (Array.isArray(result) && result.length > 0) {
+          result.sort((a, b) => b.matchCount - a.matchCount);
+          // อัปเดต top result ใน restaurant-info
+          const topRestaurant = result[0];
+          document.querySelector('.restaurant-name').textContent = topRestaurant.restaurantName;
+          document.querySelector('.restaurant-categories span').textContent = topRestaurant.description;
+          
+          // ถ้ามีข้อมูล image (Base64) ให้แสดงบน <img> ที่มี id "restaurant-hero-image"
+          if (topRestaurant.image) {
+            const base64Image = "data:image/jpeg;base64," + topRestaurant.image;
+            document.getElementById("restaurant-hero-image").src = base64Image;
+          }
+          
+          // **เพิ่ม event listener สำหรับ top-result ที่ใช้ข้อมูลจาก topRestaurant ใหม่**
+          document.getElementById("top-result").addEventListener("click", function() {
+            window.location.href = `restaurant_detail.html?restaurantID=${topRestaurant.id}`;
+          });
+          
+          // แสดงผลลัพธ์ที่เหลือใน grid (เริ่มจาก index 1)
+          displayGridResults(result.slice(1));
+        }
+      })
+      .catch(error => console.error("เกิดข้อผิดพลาดในการส่งข้อมูลไปที่ calculate API:", error));
+    })
+    .catch(error => console.error("Error fetching vote counts:", error));
+}
+
+window.addEventListener("load", fetchVoteCounts);
+
+
     window.addEventListener("load", fetchVoteCounts);
   </script>
   <script src="../api/api.js"></script>

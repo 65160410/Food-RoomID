@@ -74,10 +74,7 @@
       <!-- Cards Wrapper -->
       <div class="cards-wrapper" id="selectedCards"></div>
     </div>
-<!-- ปุ่ม Reset Time -->
-<button id="resetTimeBtn" style="margin: 10px; padding: 8px 16px; cursor: pointer;">
-  Reset Time
-</button>
+
 
   </div>
   <script src="../api/api.js"></script>
@@ -85,32 +82,7 @@
     document.addEventListener("DOMContentLoaded", function () {
 
 
- const resetTimeBtn = document.getElementById("resetTimeBtn");
-  resetTimeBtn.addEventListener("click", function() {
-
-    fetch(`${API_BASE_URL}/resetRoomCountdown.php?roomID=${roomID}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === "success") {
-          // ตั้งค่า localStorage ให้เป็นค่าใหม่
-          localStorage.setItem("countdownStartTime", data.newStartTime);
-          console.log("Time reset to:", data.newStartTime);
-
-          // เรียกฟังก์ชัน startCountdown() หรือ updateCountdown() ใหม่
-          // เพื่อให้ตัวนับถอยหลังอัปเดตทันที
-          clearInterval(countdownInterval);
-          startCountdown();
-        } else {
-          console.error("Error resetting time:", data.message);
-          alert("ไม่สามารถรีเซ็ตเวลาได้: " + data.message);
-        }
-      })
-      .catch(err => {
-        console.error("Error:", err);
-        alert("เกิดข้อผิดพลาดในการรีเซ็ตเวลา");
-      });
-  });
-
+ 
       // --- กำหนดตัวแปรพื้นฐาน ---
       const urlParams = new URLSearchParams(window.location.search);
       const roomID = urlParams.get("roomID");
@@ -126,7 +98,19 @@
       const selectedCardsContainer = document.getElementById("selectedCards");
       const leaveRoomBtn = document.getElementById("leaveRoomBtn");
       const countdownTimerEl = document.getElementById("countdownTimer");
-      
+      leaveRoomBtn.addEventListener("click", function() {
+        // ถ้าต้องการแจ้ง API ฝั่ง Server ให้ remove ออกจากห้องก่อนก็ทำได้
+        // fetch(`${API_BASE_URL}/leaveRoom.php?roomID=${roomID}&userID=...`)
+        //   .then(...)
+
+        // ล้างค่าที่อาจเกี่ยวข้องกับห้องออกจาก localStorage
+        localStorage.removeItem("roomID");
+        localStorage.removeItem("voteList");
+        localStorage.removeItem("countdownStartTime");
+
+        // เปลี่ยนหน้าไปยัง createRoom.html หรือหน้าอื่นได้ตามต้องการ
+        window.location.href = "createRoom.html";
+      });
       // --- ฟังก์ชันสำหรับเริ่มต้นการนับเวลาถอยหลังทันที ---
       const countdownDuration = 45; // วินาที
       let countdownInterval;
@@ -185,7 +169,7 @@ function updateCountdown() {
   const votesPayload = { votes: votesArray };
   console.log("Sending aggregated votes to calculate.php:", votesPayload);
   
-  fetch("https://angsila.informatics.buu.ac.th/~65160143/AJTae/calculate.php", {
+  fetch("https://angsila.informatics.buu.ac.th/~65160143/AJTae/Testapinew.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(votesPayload)
